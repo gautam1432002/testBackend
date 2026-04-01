@@ -1,0 +1,2427 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TAARUNYAM - Tech Event 2026</title>
+    
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&family=Playfair+Display:wght@700&display=swap" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.28/jspdf.plugin.autotable.min.js"></script>
+    
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                container: {
+                    center: true,
+                    padding: "2rem",
+                    screens: { "2xl": "1400px" },
+                },
+                extend: {
+                    fontFamily: {
+                        poppins: ['Poppins', 'sans-serif'],
+                        playfair: ['Playfair Display', 'serif'],
+                    },
+                    colors: {
+                        border: "hsl(217 33% 18%)",
+                        input: "hsl(217 33% 18%)",
+                        ring: "hsl(214 100% 60%)",
+                        background: { 
+                            DEFAULT: "hsl(222 47% 7%)", 
+                            secondary: "hsl(215 39% 11%)" 
+                        },
+                        foreground: "hsl(210 40% 98%)",
+                        primary: { 
+                            DEFAULT: "hsl(214 100% 60%)", 
+                            glow: "hsl(214 100% 70%)",
+                            foreground: "hsl(210 40% 98%)"
+                        },
+                        secondary: { 
+                            DEFAULT: "hsl(262 80% 65%)", 
+                            glow: "hsl(262 90% 75%)",
+                            foreground: "hsl(210 40% 98%)"
+                        },
+                        accent: { 
+                            DEFAULT: "hsl(329 100% 65%)", 
+                            glow: "hsl(329 100% 75%)",
+                            foreground: "hsl(210 40% 98%)"
+                        },
+                        winner: { 
+                            DEFAULT: "hsl(45 100% 50%)", 
+                            glow: "hsl(45 100% 60%)",
+                            foreground: "hsl(222 47% 7%)",
+                            gold: "#D4AF37",
+                            darkGold: "#AA8C2C"
+                        },
+                        destructive: { 
+                            DEFAULT: "hsl(0 84% 60%)", 
+                            foreground: "hsl(210 40% 98%)"
+                        },
+                        muted: { 
+                            DEFAULT: "hsl(215 39% 11%)", 
+                            foreground: "hsl(215 20% 65%)"
+                        },
+                        glass: "hsl(210 40% 98% / 0.1)",
+                        "glass-border": "hsl(210 40% 98% / 0.2)",
+                        "glass-hover": "hsl(210 40% 98% / 0.15)",
+                    },
+                    backgroundImage: {
+                        "gradient-primary": "linear-gradient(135deg, hsl(214 100% 60%), hsl(262 80% 65%))",
+                        "gradient-accent": "linear-gradient(135deg, hsl(262 80% 65%), hsl(329 100% 65%))",
+                        "gradient-hero": "linear-gradient(135deg, hsl(222 47% 7%), hsl(215 39% 11%))",
+                        "gradient-winner": "linear-gradient(135deg, hsl(45 100% 50%), hsl(45 100% 60%))",
+                    },
+                    boxShadow: {
+                        "glow": "0 0 40px hsl(214 100% 60% / 0.3)",
+                        "glow-secondary": "0 0 40px hsl(262 80% 65% / 0.3)",
+                        "glow-winner": "0 0 40px hsl(45 100% 50% / 0.4)",
+                    }
+                }
+            }
+        }
+    </script>
+    
+    <style>
+        :root {
+            --background: 222 47% 7%;
+            --primary: 214 100% 60%;
+        }
+        
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: url('data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1440 320"%3E%3Cpath fill="rgba(255,255,255,0.02)" fill-opacity="1" d="M0,96L48,112C96,128,192,160,288,160C384,160,480,128,576,112C672,96,768,96,864,112C960,128,1056,160,1152,160C1248,160,1344,128,1392,112L1440,96L1440,320L1392,320C1344,320,1248,320,1152,320C1056,320,960,320,864,320C768,320,672,320,576,320C480,320,384,320,288,320C192,320,96,320,48,320L0,320Z"%3E%3C/path%3E%3C/svg%3E');
+            background-size: cover;
+            z-index: 0;
+            pointer-events: none;
+        }
+        
+        .glow-text {
+            animation: glow-pulse 4s ease-in-out infinite alternate;
+        }
+        
+        @keyframes glow-pulse {
+            0% { text-shadow: 0 0 10px hsl(214 100% 60% / 0.8), 0 0 20px hsl(214 100% 60% / 0.6); }
+            100% { text-shadow: 0 0 20px hsl(214 100% 60% / 1), 0 0 30px hsl(214 100% 60% / 0.8); }
+        }
+        
+        .glass-card {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        
+        .glass-card:hover {
+            background: rgba(255, 255, 255, 0.1);
+            box-shadow: 0 0 40px hsl(214 100% 60% / 0.3);
+            transform: translateY(-2px);
+        }
+        
+        .particles {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            pointer-events: none;
+            z-index: 1;
+        }
+        
+        .particle {
+            position: absolute;
+            width: 2px; height: 2px;
+            background: hsl(214 100% 60%);
+            border-radius: 50%;
+            animation: particle-float 20s linear infinite;
+            opacity: 0.6;
+        }
+        
+        @keyframes particle-float {
+            0% { transform: translateY(100vh) rotate(0deg); opacity: 0; }
+            50% { opacity: 0.8; }
+            100% { transform: translateY(-10vh) rotate(360deg); opacity: 0; }
+        }
+        
+        .countdown-digit {
+            background: linear-gradient(135deg, hsl(214 100% 60%), hsl(262 80% 65%));
+            border: 2px solid hsl(214 100% 60%);
+            box-shadow: 0 0 40px hsl(214 100% 60% / 0.3);
+            animation: digit-glow 2s ease-in-out infinite alternate;
+        }
+        
+        @keyframes digit-glow {
+            0% { box-shadow: 0 0 40px hsl(214 100% 60% / 0.3); }
+            100% { box-shadow: 0 0 60px hsl(214 100% 60% / 0.5); }
+        }
+        
+        .shine-effect {
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .shine-effect::after {
+            content: '';
+            position: absolute;
+            top: -50%; left: -50%; width: 200%; height: 200%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.4), transparent);
+            animation: shine 6s infinite;
+            transform: rotate(30deg);
+            pointer-events: none;
+        }
+        
+        @keyframes shine {
+            0% { transform: translateX(-100%) rotate(30deg); }
+            100% { transform: translateX(100%) rotate(30deg); }
+        }
+        
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: hsl(222 47% 7%); }
+        ::-webkit-scrollbar-thumb { background: hsl(215 39% 11%); border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: hsl(214 100% 60%); }
+        
+        .font-handwriting {
+            font-family: 'Brush Script MT', cursive;
+        }
+        
+        .custom-scrollbar::-webkit-scrollbar {
+            width: 6px;
+        }
+        
+        .custom-scrollbar::-webkit-scrollbar-track {
+            background: rgba(0,0,0,0.2);
+        }
+        
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+            background: rgba(255,255,255,0.2);
+            border-radius: 10px;
+        }
+        
+        .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+            background: rgba(255,255,255,0.4);
+        }
+        
+        #certificate-render-target {
+            width: 1123px;
+            height: 794px;
+            background-color: white;
+            flex-shrink: 0;
+        }
+        
+        @keyframes fade-in {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        
+        @keyframes slide-in-from-right {
+            from { transform: translateX(100%); }
+            to { transform: translateX(0); }
+        }
+        
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            10%, 30%, 50%, 70%, 90% { transform: translateX(-5px); }
+            20%, 40%, 60%, 80% { transform: translateX(5px); }
+        }
+        
+        .animate-in {
+            animation-duration: 300ms;
+            animation-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+            animation-fill-mode: forwards;
+        }
+        
+        .fade-in { animation-name: fade-in; }
+        .slide-in-from-right { animation-name: slide-in-from-right; }
+        .animate-shake { animation: shake 0.5s ease-in-out; }
+        
+        .admin-tab {
+            padding: 0.75rem 1.5rem;
+            border-bottom: 2px solid transparent;
+            transition: all 0.3s;
+        }
+        
+        .admin-tab.active {
+            border-bottom-color: hsl(214 100% 60%);
+            color: hsl(214 100% 60%);
+        }
+        
+        select.glass-select {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            color: white;
+            border-radius: 0.5rem;
+            padding: 0.75rem;
+            width: 100%;
+            outline: none;
+            transition: all 0.3s;
+        }
+        
+        select.glass-select:focus {
+            border-color: hsl(214 100% 60%);
+            box-shadow: 0 0 0 2px hsl(214 100% 60% / 0.2);
+        }
+        
+        select.glass-select option {
+            background: hsl(222 47% 7%);
+            color: white;
+        }
+        
+        .admin-tab-content {
+            display: none;
+        }
+        
+        .admin-tab-content.active {
+            display: block;
+        }
+        
+        @media print {
+            #certificate-render-target {
+                width: 100% !important;
+                height: auto !important;
+                transform: none !important;
+                box-shadow: none !important;
+                border: none !important;
+            }
+            
+            #cert-scroll-area {
+                background: white !important;
+                padding: 0 !important;
+                border: none !important;
+            }
+        }
+        
+        .security-badge {
+            position: relative;
+            background: linear-gradient(135deg, #1e40af, #3b82f6);
+            border: 2px solid #60a5fa;
+        }
+        
+        .certificate-name {
+            font-family: 'Playfair Display', 'Georgia', serif;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
+        }
+        
+        .certificate-body {
+            font-family: 'Poppins', 'Arial', sans-serif;
+            line-height: 1.6;
+        }
+    </style>
+</head>
+
+<body class="bg-background text-foreground min-h-screen relative overflow-x-hidden font-poppins selection:bg-primary selection:text-white">
+    <div id="particles-container" class="particles"></div>
+    
+    <header id="main-header" class="fixed top-0 left-0 right-0 z-50 transition-all duration-300 bg-transparent">
+        <div class="container mx-auto px-6 py-4">
+            <nav class="flex items-center justify-between">
+                <div class="flex items-center space-x-2">
+                    <h1 class="text-2xl font-bold glow-text text-white">TAARUNYAM</h1>
+                    <span class="text-sm text-muted-foreground">2026</span>
+                </div>
+                
+                <div class="hidden md:flex items-center space-x-8">
+                    <button onclick="scrollToSection('hero')" class="text-foreground hover:text-primary transition-colors">Home</button>
+                    <button onclick="scrollToSection('events')" class="text-foreground hover:text-primary transition-colors">Events</button>
+                    <button onclick="scrollToSection('certificates')" class="text-foreground hover:text-primary transition-colors">Certificates</button>
+                    <button onclick="scrollToSection('events')" class="bg-gradient-primary text-white font-semibold shadow-glow hover:shadow-glow-accent transform hover:scale-105 transition-all duration-300 px-6 py-2 rounded-lg text-sm shine-effect">
+                        Register Now
+                    </button>
+                </div>
+                
+                <button class="md:hidden text-white" onclick="toggleMobileMenu()">
+                    <i data-lucide="menu"></i>
+                </button>
+            </nav>
+            
+            <div id="mobile-menu" class="hidden md:hidden mt-4 p-4 bg-glass backdrop-blur-xl rounded-lg border border-glass-border">
+                <div class="flex flex-col space-y-4">
+                    <button onclick="scrollToSection('hero')" class="text-left text-foreground hover:text-primary">Home</button>
+                    <button onclick="scrollToSection('events')" class="text-left text-foreground hover:text-primary">Events</button>
+                    <button onclick="scrollToSection('certificates')" class="text-left text-foreground hover:text-primary">Certificates</button>
+                </div>
+            </div>
+        </div>
+    </header>
+    
+    <main class="relative z-10">
+        <section id="hero" class="min-h-screen flex items-center justify-center relative overflow-hidden pt-20">
+            <div class="absolute inset-0 overflow-hidden pointer-events-none">
+                <div class="absolute top-1/4 left-1/4 w-64 h-64 bg-primary/10 rounded-full blur-3xl animate-pulse"></div>
+                <div class="absolute bottom-1/4 right-1/4 w-96 h-96 bg-secondary/10 rounded-full blur-3xl animate-pulse" style="animation-delay: 1s;"></div>
+            </div>
+            
+            <div class="container mx-auto px-6 text-center relative z-10">
+                <div class="max-w-4xl mx-auto">
+                    <h1 class="text-6xl md:text-8xl font-bold mb-6 glow-text uppercase tracking-wider text-white" id="main-title">
+                        TAARUNYAM
+                    </h1>
+                    <div class="flex items-center justify-center gap-2 mb-8">
+                        <div class="h-1 w-16 bg-gradient-primary rounded-full"></div>
+                        <h2 class="text-2xl md:text-3xl font-semibold text-secondary-glow" id="main-subtitle">Tech Event 2026</h2>
+                        <div class="h-1 w-16 bg-gradient-primary rounded-full"></div>
+                    </div>
+                    
+                    <p class="text-xl md:text-2xl text-muted-foreground mb-12 leading-relaxed" id="main-description">
+                        The Ultimate Technology Championship<br/>
+                        <span class="text-primary-glow font-medium">Where Innovation Meets Competition</span>
+                    </p>
+                    
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-12">
+                        <div class="glass-card p-6 rounded-xl">
+                            <i data-lucide="calendar" class="w-8 h-8 text-primary mx-auto mb-3"></i>
+                            <h3 class="font-semibold text-lg mb-2 text-white">Date</h3>
+                            <p class="text-muted-foreground" id="event-date">March 15, 2026</p>
+                        </div>
+                        <div class="glass-card p-6 rounded-xl">
+                            <i data-lucide="map-pin" class="w-8 h-8 text-secondary mx-auto mb-3"></i>
+                            <h3 class="font-semibold text-lg mb-2 text-white">Venue</h3>
+                            <p class="text-muted-foreground" id="event-venue">Tech Campus Auditorium</p>
+                        </div>
+                        <div class="glass-card p-6 rounded-xl">
+                            <i data-lucide="users" class="w-8 h-8 text-accent mx-auto mb-3"></i>
+                            <h3 class="font-semibold text-lg mb-2 text-white">Categories</h3>
+                            <p class="text-muted-foreground" id="event-categories">6 Exciting Events</p>
+                        </div>
+                    </div>
+                    
+                    <div class="mb-12">
+                        <h3 class="text-2xl font-semibold mb-8 glow-text text-white">Event Starts In</h3>
+                        <div id="countdown" class="flex gap-4 justify-center items-center"></div>
+                    </div>
+                    
+                    <div class="flex flex-col sm:flex-row gap-4 justify-center items-center">
+                        <button onclick="scrollToSection('events')" class="w-full sm:w-auto bg-gradient-primary text-white font-semibold shadow-glow hover:shadow-glow-accent transform hover:scale-105 transition-all duration-300 shine-effect h-16 rounded-xl px-10 text-lg">
+                            Register Now
+                        </button>
+                        <button onclick="toggleAdminModal()" class="w-full sm:w-auto bg-glass border border-glass-border backdrop-blur-xl text-foreground hover:bg-glass-hover hover:shadow-glow transition-all duration-300 h-16 rounded-xl px-10 text-lg">
+                            Admin Login
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </section>
+        
+        <section id="events" class="py-20 relative">
+            <div class="container mx-auto px-6">
+                <div class="text-center mb-16">
+                    <h2 class="text-4xl md:text-5xl font-bold mb-6 glow-text text-white">Competition Events</h2>
+                    <p class="text-xl text-muted-foreground max-w-3xl mx-auto leading-relaxed">
+                        Choose your battlefield! Six exciting tech competitions designed to challenge and showcase your skills.
+                    </p>
+                </div>
+                
+                <div class="flex flex-col md:flex-row gap-4 mb-12">
+                    <div class="relative flex-1">
+                        <i data-lucide="search" class="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground w-4 h-4"></i>
+                        <input type="text" id="event-search" placeholder="Search events..." class="pl-10 glass-card w-full h-12 rounded-lg bg-glass border border-glass-border text-white focus:outline-none focus:ring-2 focus:ring-primary">
+                    </div>
+                    <div class="flex items-center gap-2 overflow-x-auto pb-2" id="category-filters"></div>
+                </div>
+                
+                <div id="events-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8"></div>
+            </div>
+        </section>
+        
+        <section id="certificates" class="py-20">
+            <div class="container mx-auto px-6 text-center">
+                <h2 class="text-4xl md:text-5xl font-bold mb-6 glow-text text-white">Certificates & Recognition</h2>
+                <p class="text-xl text-muted-foreground max-w-3xl mx-auto mb-12">
+                    Every participant receives a digital certificate. Winners get special recognition.
+                </p>
+                
+                <div class="glass-card p-12 rounded-2xl max-w-4xl mx-auto">
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-8 mb-8">
+                        <div class="text-center">
+                            <div class="w-20 h-20 bg-gradient-primary rounded-full flex items-center justify-center mx-auto mb-4 text-3xl">📜</div>
+                            <h3 class="text-xl font-bold mb-2 text-white">Participation Certificate</h3>
+                            <p class="text-muted-foreground">Modern design with geometric elements</p>
+                        </div>
+                        <div class="text-center">
+                            <div class="w-20 h-20 bg-gradient-winner rounded-full flex items-center justify-center mx-auto mb-4 text-3xl">🏆</div>
+                            <h3 class="text-xl font-bold mb-2 text-white">Winner Certificate</h3>
+                            <p class="text-muted-foreground">Premium gold-themed elegant design</p>
+                        </div>
+                    </div>
+                    
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mt-8">
+                        <button onclick="toggleAdminModal()" class="bg-glass border border-glass-border text-foreground hover:bg-glass-hover transition-all px-6 py-3 rounded-lg flex items-center justify-center gap-2">
+                            <i data-lucide="shield"></i> Admin Panel
+                        </button>
+                        <button onclick="openRegModal()" class="bg-gradient-primary text-white hover:shadow-glow-accent transition-all px-6 py-3 rounded-lg flex items-center justify-center gap-2">
+                            <i data-lucide="award"></i> Get Your Certificate
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </section>
+        
+        <section id="contact" class="py-20 bg-background-secondary">
+            <div class="container mx-auto px-6">
+                <div class="text-center mb-16">
+                    <h2 class="text-4xl md:text-5xl font-bold mb-6 glow-text text-white">Contact Us</h2>
+                    <p class="text-xl text-muted-foreground max-w-3xl mx-auto">Get in touch with us for any queries</p>
+                </div>
+                
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                    <div class="glass-card p-6 rounded-xl text-center">
+                        <i data-lucide="mail" class="w-8 h-8 text-primary mx-auto mb-4"></i>
+                        <h3 class="text-xl font-bold mb-2 text-white">Email</h3>
+                        <p class="text-muted-foreground" id="contact-email">contact@taarunyam2026.com</p>
+                    </div>
+                    <div class="glass-card p-6 rounded-xl text-center">
+                        <i data-lucide="phone" class="w-8 h-8 text-secondary mx-auto mb-4"></i>
+                        <h3 class="text-xl font-bold mb-2 text-white">Phone</h3>
+                        <p class="text-muted-foreground" id="contact-phone">+91 98765 43210</p>
+                    </div>
+                    <div class="glass-card p-6 rounded-xl text-center">
+                        <i data-lucide="map-pin" class="w-8 h-8 text-accent mx-auto mb-4"></i>
+                        <h3 class="text-xl font-bold mb-2 text-white">Location</h3>
+                        <p class="text-muted-foreground" id="contact-location">Tech Campus, Innovation City</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+    
+    <footer id="main-footer" class="relative py-20 border-t border-glass-border">
+        <div class="container mx-auto px-6 relative z-10">
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-12">
+                <div>
+                    <h3 class="text-2xl font-bold text-glow mb-4 text-white">TAARUNYAM</h3>
+                    <p class="text-muted-foreground mb-4" id="footer-description">
+                        The Ultimate Tech Championship celebrating innovation, creativity, and technological excellence.
+                    </p>
+                    <div class="flex space-x-4">
+                        <a href="#" class="text-muted-foreground hover:text-primary"><i data-lucide="facebook"></i></a>
+                        <a href="#" class="text-muted-foreground hover:text-primary"><i data-lucide="twitter"></i></a>
+                        <a href="#" class="text-muted-foreground hover:text-primary"><i data-lucide="instagram"></i></a>
+                        <a href="#" class="text-muted-foreground hover:text-primary"><i data-lucide="linkedin"></i></a>
+                    </div>
+                </div>
+                
+                <div>
+                    <h4 class="text-lg font-bold mb-4 text-white">Quick Links</h4>
+                    <ul class="space-y-2">
+                        <li><a href="#" onclick="scrollToSection('hero')" class="text-muted-foreground hover:text-primary">Home</a></li>
+                        <li><a href="#" onclick="scrollToSection('events')" class="text-muted-foreground hover:text-primary">Events</a></li>
+                        <li><a href="#" onclick="scrollToSection('certificates')" class="text-muted-foreground hover:text-primary">Certificates</a></li>
+                        <li><a href="#" onclick="scrollToSection('contact')" class="text-muted-foreground hover:text-primary">Contact</a></li>
+                    </ul>
+                </div>
+                
+                <div>
+                    <h4 class="text-lg font-bold mb-4 text-white">Additional Info</h4>
+                    <p class="text-muted-foreground" id="footer-extra">
+                        Organized by Tech Innovation Society.<br>
+                        All participants must follow code of conduct.
+                    </p>
+                </div>
+            </div>
+            
+            <div class="mt-12 pt-8 border-t border-glass-border text-center">
+                <p class="text-muted-foreground text-sm" id="footer-copyright">
+                    © 2026 TAARUNYAM Tech Event. All rights reserved.
+                </p>
+            </div>
+        </div>
+    </footer>
+    
+    <!-- Event Modal -->
+    <div id="event-modal" class="fixed inset-0 z-50 hidden bg-black/80 flex items-center justify-center p-4 backdrop-blur-sm">
+        <div class="glass-card w-full max-w-2xl rounded-xl p-6 relative animate-in fade-in zoom-in-95 duration-200">
+            <button onclick="closeModal('event-modal')" class="absolute right-4 top-4 text-muted-foreground hover:text-white"><i data-lucide="x"></i></button>
+            <div id="event-modal-content"></div>
+        </div>
+    </div>
+    
+    <!-- Registration Modal -->
+    <div id="reg-modal" class="fixed inset-0 z-50 hidden bg-black/80 flex items-center justify-center p-4 backdrop-blur-sm">
+        <div class="glass-card w-full max-w-2xl max-h-[90vh] overflow-y-auto rounded-xl p-6 relative">
+            <button onclick="closeModal('reg-modal')" class="absolute right-4 top-4 text-muted-foreground hover:text-white"><i data-lucide="x"></i></button>
+            <h2 class="text-2xl font-bold text-glow mb-2 text-white">Register</h2>
+            <p class="text-muted-foreground mb-6">Enter your details to generate your ID and Certificate.</p>
+            
+            <form id="registration-form" class="space-y-4">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-sm font-medium mb-1 text-white">Full Name <span class="text-red-500">*</span></label>
+                        <input required type="text" name="name" class="w-full glass-card p-3 rounded-lg bg-glass border border-glass-border text-white focus:ring-2 focus:ring-primary outline-none">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium mb-1 text-white">Mobile Number <span class="text-red-500">*</span></label>
+                        <input required type="tel" name="mobile" pattern="[0-9]{10}" placeholder="10-digit number" class="w-full glass-card p-3 rounded-lg bg-glass border border-glass-border text-white focus:ring-2 focus:ring-primary outline-none">
+                    </div>
+                </div>
+                
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-sm font-medium mb-1 text-white">Email <span class="text-red-500">*</span></label>
+                        <input required type="email" name="email" class="w-full glass-card p-3 rounded-lg bg-glass border border-glass-border text-white focus:ring-2 focus:ring-primary outline-none">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium mb-1 text-white">College / Institute <span class="text-red-500">*</span></label>
+                        <input required type="text" name="college" class="w-full glass-card p-3 rounded-lg bg-glass border border-glass-border text-white focus:ring-2 focus:ring-primary outline-none">
+                    </div>
+                </div>
+                
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-sm font-medium mb-1 text-white">Course / Branch <span class="text-red-500">*</span></label>
+                        <select required name="course" class="w-full glass-select">
+                            <option value="" disabled selected>Select your course</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium mb-1 text-white">Year <span class="text-red-500">*</span></label>
+                        <select required name="year" class="w-full glass-select">
+                            <option value="" disabled selected>Select your year</option>
+                            <option value="1st Year">1st Year</option>
+                            <option value="2nd Year">2nd Year</option>
+                            <option value="3rd Year">3rd Year</option>
+                            <option value="4th Year">4th Year</option>
+                        </select>
+                    </div>
+                </div>
+                
+                <div>
+                    <label class="block text-sm font-medium mb-2 text-white">Select Events (At least one) <span class="text-red-500">*</span></label>
+                    <div id="reg-events-list" class="grid grid-cols-1 md:grid-cols-2 gap-3 max-h-40 overflow-y-auto custom-scrollbar"></div>
+                </div>
+                
+                <button type="submit" class="w-full bg-gradient-primary text-white font-semibold py-3 rounded-lg shadow-glow hover:shadow-glow-accent transition-all">
+                    Register & Get Certificate
+                </button>
+            </form>
+        </div>
+    </div>
+    
+    <!-- Certificate Preview Modal -->
+    <div id="cert-modal" class="fixed inset-0 z-[60] hidden bg-black/90 flex items-center justify-center p-4 backdrop-blur-md">
+        <div class="flex flex-col items-center w-full max-w-5xl h-[95vh]">
+            <div class="w-full flex justify-between items-center mb-4 px-4">
+                <h3 class="text-white text-xl font-bold">Certificate Preview</h3>
+                <div class="flex gap-3">
+                    <button onclick="downloadCert('png')" class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded flex gap-2 items-center"><i data-lucide="image"></i> PNG</button>
+                    <button onclick="downloadCert('pdf')" class="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded flex gap-2 items-center"><i data-lucide="file-text"></i> PDF</button>
+                    <button onclick="closeModal('cert-modal')" class="bg-gray-700 hover:bg-gray-600 text-white px-4 py-2 rounded"><i data-lucide="x"></i></button>
+                </div>
+            </div>
+            <div class="flex-1 w-full overflow-auto flex justify-center items-center bg-gray-900 rounded-lg p-8 border border-gray-700" id="cert-scroll-area">
+                <div id="certificate-render-target" class="shadow-2xl origin-center transform scale-[0.6] md:scale-[0.7] lg:scale-[0.8] transition-transform"></div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Admin Modal -->
+    <div id="admin-modal" class="fixed inset-0 z-50 hidden bg-black/80 flex items-center justify-center p-4 backdrop-blur-sm">
+        <div class="glass-card w-full max-w-6xl max-h-[90vh] overflow-y-auto rounded-xl p-6 relative">
+            <button onclick="closeModal('admin-modal')" class="absolute right-4 top-4 text-muted-foreground hover:text-white">
+                <i data-lucide="x"></i>
+            </button>
+            
+            <!-- Admin Login View (Visible by default) -->
+            <div id="admin-login-view" class="space-y-6">
+                <div class="text-center">
+                    <div class="w-20 h-20 bg-gradient-primary rounded-full flex items-center justify-center mx-auto mb-4">
+                        <i data-lucide="shield" class="w-10 h-10 text-white"></i>
+                    </div>
+                    <h2 class="text-2xl font-bold text-glow mb-2 text-white">Admin Access Required</h2>
+                    <p class="text-muted-foreground text-sm mb-6">Please enter your credentials to access the admin panel</p>
+                </div>
+                
+                <div class="glass-card p-6 rounded-lg">
+                    <div class="mb-4">
+                        <label class="block text-sm font-medium mb-2 text-white">Admin Password</label>
+                        <div class="relative">
+                            <input type="password" id="admin-password" placeholder="Enter admin password" 
+                                   class="w-full glass-card p-3 rounded-lg bg-glass border border-glass-border text-white pr-10">
+                            <i data-lucide="lock" class="absolute right-3 top-1/2 transform -translate-y-1/2 text-muted-foreground w-4 h-4"></i>
+                        </div>
+                        <p class="text-xs text-muted-foreground mt-2">Default password: admin123</p>
+                    </div>
+                    
+                    <button onclick="handleAdminLogin()" 
+                            class="w-full bg-gradient-primary text-white font-semibold py-3 rounded-lg shadow-glow hover:shadow-glow-accent transition-all">
+                        Login to Admin Panel
+                    </button>
+                </div>
+                
+                <div class="text-center">
+                    <p class="text-xs text-muted-foreground">For security reasons, admin functions are protected.</p>
+                </div>
+            </div>
+            
+            <!-- Admin Dashboard View (Hidden by default) -->
+            <div id="admin-dashboard-view" class="hidden space-y-6">
+                <!-- Admin Header with Export/Logout -->
+                <div class="flex justify-between items-center mb-6">
+                    <div>
+                        <h2 class="text-2xl font-bold text-glow text-white">Admin Dashboard</h2>
+                        <p class="text-sm text-muted-foreground">Manage participants, events, and certificates</p>
+                    </div>
+                    <div class="flex gap-2">
+                        <button onclick="exportParticipantsPDF()" 
+                                class="px-4 py-2 bg-green-600 hover:bg-green-700 text-white rounded-lg text-sm flex items-center gap-2 transition-all">
+                            <i data-lucide="download"></i> Export PDF
+                        </button>
+                        <button onclick="adminLogout()" 
+                                class="px-4 py-2 bg-red-600 hover:bg-red-700 text-white rounded-lg text-sm flex items-center gap-2 transition-all">
+                            <i data-lucide="log-out"></i> Logout
+                        </button>
+                    </div>
+                </div>
+                
+                <!-- Admin Tabs -->
+                <div class="flex border-b border-glass-border overflow-x-auto">
+                    <button onclick="showAdminTab('participants')" class="admin-tab active" data-tab="participants">
+                        <i data-lucide="users" class="w-4 h-4 mr-2"></i> Participants
+                    </button>
+                    <button onclick="showAdminTab('events')" class="admin-tab" data-tab="events">
+                        <i data-lucide="calendar" class="w-4 h-4 mr-2"></i> Events
+                    </button>
+                    <button onclick="showAdminTab('certificates')" class="admin-tab" data-tab="certificates">
+                        <i data-lucide="award" class="w-4 h-4 mr-2"></i> Certificates
+                    </button>
+                    <button onclick="showAdminTab('dashboard')" class="admin-tab" data-tab="dashboard">
+                        <i data-lucide="layout-dashboard" class="w-4 h-4 mr-2"></i> Dashboard
+                    </button>
+                    <button onclick="showAdminTab('footer')" class="admin-tab" data-tab="footer">
+                        <i data-lucide="folder" class="w-4 h-4 mr-2"></i> Footer
+                    </button>
+                    <button onclick="showAdminTab('contact')" class="admin-tab" data-tab="contact">
+                        <i data-lucide="phone" class="w-4 h-4 mr-2"></i> Contact
+                    </button>
+                </div>
+                
+                <!-- Tab Contents -->
+                <div id="admin-tab-contents">
+                    <!-- Participants Tab -->
+                    <div id="tab-participants" class="admin-tab-content active">
+                        <div class="grid grid-cols-3 gap-4 text-center mb-6">
+                            <div class="glass-card p-4 rounded-lg">
+                                <div class="text-2xl font-bold text-primary" id="stat-total">0</div>
+                                <div class="text-xs text-muted-foreground">Total Participants</div>
+                            </div>
+                            <div class="glass-card p-4 rounded-lg">
+                                <div class="text-2xl font-bold text-winner" id="stat-winners">0</div>
+                                <div class="text-xs text-muted-foreground">Winners</div>
+                            </div>
+                            <div class="glass-card p-4 rounded-lg">
+                                <div class="text-2xl font-bold text-secondary" id="stat-events">6</div>
+                                <div class="text-xs text-muted-foreground">Events</div>
+                            </div>
+                        </div>
+                        
+                        <div class="mb-4">
+                            <div class="relative">
+                                <i data-lucide="search" class="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground w-4 h-4"></i>
+                                <input type="text" id="admin-search" placeholder="Search by name, email, or ID..." class="pl-10 w-full glass-card p-3 rounded-lg bg-glass border border-glass-border text-white">
+                            </div>
+                        </div>
+                        
+                        <div id="admin-participants-list" class="space-y-3 max-h-[400px] overflow-y-auto pr-2 custom-scrollbar"></div>
+                    </div>
+                    
+                    <!-- Events Management Tab -->
+                    <div id="tab-events" class="admin-tab-content hidden">
+                        <div class="flex justify-between items-center mb-6">
+                            <h3 class="text-xl font-semibold text-white">Event Management</h3>
+                            <button onclick="openEventEditor(null)" class="px-4 py-2 bg-gradient-primary text-white rounded-lg flex items-center gap-2">
+                                <i data-lucide="plus"></i> Add New Event
+                            </button>
+                        </div>
+                        
+                        <div id="events-management-list" class="space-y-4"></div>
+                    </div>
+                    
+                    <!-- Certificates Tab -->
+                    <div id="tab-certificates" class="admin-tab-content hidden">
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <div class="glass-card p-6 rounded-lg">
+                                <h3 class="text-lg font-semibold mb-4 text-white">Participation Certificate</h3>
+                                <form id="participation-cert-form" class="space-y-4">
+                                    <div>
+                                        <label class="block text-sm font-medium mb-1 text-white">Certificate Title</label>
+                                        <input type="text" name="title" class="w-full glass-card p-3 rounded-lg bg-glass border border-glass-border text-white">
+                                    </div>
+                                    <div>
+                                        <label class="block text-sm font-medium mb-1 text-white">Main Text Template</label>
+                                        <textarea name="mainText" rows="3" class="w-full glass-card p-3 rounded-lg bg-glass border border-glass-border text-white"></textarea>
+                                        <p class="text-xs text-muted-foreground mt-1">Use {name}, {college}, {event} as variables</p>
+                                    </div>
+                                    <div>
+                                        <label class="block text-sm font-medium mb-1 text-white">Coordinator Name</label>
+                                        <input type="text" name="coordinator" class="w-full glass-card p-3 rounded-lg bg-glass border border-glass-border text-white">
+                                    </div>
+                                    <div>
+                                        <label class="block text-sm font-medium mb-1 text-white">Director Name</label>
+                                        <input type="text" name="director" class="w-full glass-card p-3 rounded-lg bg-glass border border-glass-border text-white">
+                                    </div>
+                                    <button type="submit" class="w-full bg-gradient-primary text-white py-3 rounded-lg">Save Changes</button>
+                                </form>
+                            </div>
+                            
+                            <div class="glass-card p-6 rounded-lg">
+                                <h3 class="text-lg font-semibold mb-4 text-white">Winner Certificate</h3>
+                                <form id="winner-cert-form" class="space-y-4">
+                                    <div>
+                                        <label class="block text-sm font-medium mb-1 text-white">Certificate Title</label>
+                                        <input type="text" name="title" class="w-full glass-card p-3 rounded-lg bg-glass border border-glass-border text-white">
+                                    </div>
+                                    <div>
+                                        <label class="block text-sm font-medium mb-1 text-white">Main Text Template</label>
+                                        <textarea name="mainText" rows="3" class="w-full glass-card p-3 rounded-lg bg-glass border border-glass-border text-white"></textarea>
+                                        <p class="text-xs text-muted-foreground mt-1">Use {name}, {college}, {event} as variables</p>
+                                    </div>
+                                    <div>
+                                        <label class="block text-sm font-medium mb-1 text-white">Executive Director</label>
+                                        <input type="text" name="executive" class="w-full glass-card p-3 rounded-lg bg-glass border border-glass-border text-white">
+                                    </div>
+                                    <div>
+                                        <label class="block text-sm font-medium mb-1 text-white">Head of Technology</label>
+                                        <input type="text" name="headTech" class="w-full glass-card p-3 rounded-lg bg-glass border border-glass-border text-white">
+                                    </div>
+                                    <button type="submit" class="w-full bg-gradient-winner text-white py-3 rounded-lg">Save Changes</button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Dashboard Content Tab -->
+                    <div id="tab-dashboard" class="admin-tab-content hidden">
+                        <div class="glass-card p-6 rounded-lg">
+                            <h3 class="text-lg font-semibold mb-6 text-white">Dashboard Content</h3>
+                            <form id="dashboard-form" class="space-y-4">
+                                <div>
+                                    <label class="block text-sm font-medium mb-1 text-white">Main Title</label>
+                                    <input type="text" name="mainTitle" class="w-full glass-card p-3 rounded-lg bg-glass border border-glass-border text-white">
+                                </div>
+                                <div>
+                                    <label class="block text-sm font-medium mb-1 text-white">Subtitle</label>
+                                    <input type="text" name="subtitle" class="w-full glass-card p-3 rounded-lg bg-glass border border-glass-border text-white">
+                                </div>
+                                <div>
+                                    <label class="block text-sm font-medium mb-1 text-white">Description</label>
+                                    <textarea name="description" rows="3" class="w-full glass-card p-3 rounded-lg bg-glass border border-glass-border text-white"></textarea>
+                                </div>
+                                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                    <div>
+                                        <label class="block text-sm font-medium mb-1 text-white">Event Date</label>
+                                        <input type="text" name="eventDate" class="w-full glass-card p-3 rounded-lg bg-glass border border-glass-border text-white">
+                                    </div>
+                                    <div>
+                                        <label class="block text-sm font-medium mb-1 text-white">Event Venue</label>
+                                        <input type="text" name="eventVenue" class="w-full glass-card p-3 rounded-lg bg-glass border border-glass-border text-white">
+                                    </div>
+                                </div>
+                                <div>
+                                    <label class="block text-sm font-medium mb-1 text-white">Categories Text</label>
+                                    <input type="text" name="categoriesText" class="w-full glass-card p-3 rounded-lg bg-glass border border-glass-border text-white">
+                                </div>
+                                <div>
+                                    <label class="block text-sm font-medium mb-1 text-white">Countdown Target Date</label>
+                                    <input type="datetime-local" name="countdownDate" class="w-full glass-card p-3 rounded-lg bg-glass border border-glass-border text-white">
+                                </div>
+                                <button type="submit" class="w-full bg-gradient-primary text-white py-3 rounded-lg">Save Changes</button>
+                            </form>
+                        </div>
+                    </div>
+                    
+                    <!-- Footer Content Tab -->
+                    <div id="tab-footer" class="admin-tab-content hidden">
+                        <div class="glass-card p-6 rounded-lg">
+                            <h3 class="text-lg font-semibold mb-6 text-white">Footer Content</h3>
+                            <form id="footer-form" class="space-y-4">
+                                <div>
+                                    <label class="block text-sm font-medium mb-1 text-white">Description</label>
+                                    <textarea name="description" rows="2" class="w-full glass-card p-3 rounded-lg bg-glass border border-glass-border text-white"></textarea>
+                                </div>
+                                <div>
+                                    <label class="block text-sm font-medium mb-1 text-white">Additional Info</label>
+                                    <textarea name="extraInfo" rows="2" class="w-full glass-card p-3 rounded-lg bg-glass border border-glass-border text-white"></textarea>
+                                </div>
+                                <div>
+                                    <label class="block text-sm font-medium mb-1 text-white">Copyright Text</label>
+                                    <input type="text" name="copyright" class="w-full glass-card p-3 rounded-lg bg-glass border border-glass-border text-white">
+                                </div>
+                                <button type="submit" class="w-full bg-gradient-primary text-white py-3 rounded-lg">Save Changes</button>
+                            </form>
+                        </div>
+                    </div>
+                    
+                    <!-- Contact Content Tab -->
+                    <div id="tab-contact" class="admin-tab-content hidden">
+                        <div class="glass-card p-6 rounded-lg">
+                            <h3 class="text-lg font-semibold mb-6 text-white">Contact Information</h3>
+                            <form id="contact-form" class="space-y-4">
+                                <div>
+                                    <label class="block text-sm font-medium mb-1 text-white">Email</label>
+                                    <input type="email" name="email" class="w-full glass-card p-3 rounded-lg bg-glass border border-glass-border text-white">
+                                </div>
+                                <div>
+                                    <label class="block text-sm font-medium mb-1 text-white">Phone Number</label>
+                                    <input type="text" name="phone" class="w-full glass-card p-3 rounded-lg bg-glass border border-glass-border text-white">
+                                </div>
+                                <div>
+                                    <label class="block text-sm font-medium mb-1 text-white">Location</label>
+                                    <input type="text" name="location" class="w-full glass-card p-3 rounded-lg bg-glass border border-glass-border text-white">
+                                </div>
+                                <button type="submit" class="w-full bg-gradient-primary text-white py-3 rounded-lg">Save Changes</button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Event Editor Modal -->
+    <div id="event-editor-modal" class="fixed inset-0 z-[60] hidden bg-black/80 flex items-center justify-center p-4 backdrop-blur-sm">
+        <div class="glass-card w-full max-w-2xl rounded-xl p-6 relative">
+            <button onclick="closeModal('event-editor-modal')" class="absolute right-4 top-4 text-muted-foreground hover:text-white"><i data-lucide="x"></i></button>
+            <h3 class="text-xl font-bold mb-4 text-white" id="event-editor-title">Add New Event</h3>
+            
+            <form id="event-editor-form" class="space-y-4">
+                <input type="hidden" id="event-edit-id" value="">
+                
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-sm font-medium mb-1 text-white">Event Title *</label>
+                        <input required type="text" id="event-edit-title" class="w-full glass-card p-3 rounded-lg bg-glass border border-glass-border text-white">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium mb-1 text-white">Category *</label>
+                        <select id="event-edit-category" class="w-full glass-select">
+                            <option value="Programming">Programming</option>
+                            <option value="Knowledge">Knowledge</option>
+                            <option value="Innovation">Innovation</option>
+                            <option value="Web Development">Web Development</option>
+                            <option value="Problem Solving">Problem Solving</option>
+                            <option value="Artificial Intelligence">Artificial Intelligence</option>
+                        </select>
+                    </div>
+                </div>
+                
+                <div>
+                    <label class="block text-sm font-medium mb-1 text-white">Description *</label>
+                    <textarea required id="event-edit-description" rows="3" class="w-full glass-card p-3 rounded-lg bg-glass border border-glass-border text-white"></textarea>
+                </div>
+                
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                    <div>
+                        <label class="block text-sm font-medium mb-1 text-white">Icon Name</label>
+                        <input type="text" id="event-edit-icon" placeholder="First letter will be used if empty" class="w-full glass-card p-3 rounded-lg bg-glass border border-glass-border text-white">
+                        <p class="text-xs text-muted-foreground mt-1">From Lucide Icons or leave empty for first letter</p>
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium mb-1 text-white">Max Participants</label>
+                        <input type="number" id="event-edit-max" class="w-full glass-card p-3 rounded-lg bg-glass border border-glass-border text-white">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium mb-1 text-white">Event Date & Time</label>
+                        <input type="datetime-local" id="event-edit-date" class="w-full glass-card p-3 rounded-lg bg-glass border border-glass-border text-white">
+                    </div>
+                </div>
+                
+                <div>
+                    <label class="block text-sm font-medium mb-1 text-white">Prizes (comma separated)</label>
+                    <input type="text" id="event-edit-prizes" placeholder="₹10,000, ₹5,000, ₹2,500" class="w-full glass-card p-3 rounded-lg bg-glass border border-glass-border text-white">
+                </div>
+                
+                <div class="flex justify-end gap-2 pt-4">
+                    <button type="button" onclick="closeModal('event-editor-modal')" class="px-4 py-2 border border-glass-border rounded-lg text-white hover:bg-white/10">Cancel</button>
+                    <button type="submit" class="px-4 py-2 bg-gradient-primary rounded-lg text-white font-medium">Save Event</button>
+                </div>
+            </form>
+        </div>
+    </div>
+    
+    <div id="toast-container" class="fixed top-4 right-4 z-[100] flex flex-col gap-2"></div>
+    
+    <script>
+        // ========== DATA STORAGE & CONFIGURATION ==========
+        const STORAGE_KEYS = {
+            PARTICIPANTS: 'taarunyam-participants',
+            EVENTS: 'taarunyam-events',
+            CERTIFICATES: 'taarunyam-certificates',
+            DASHBOARD: 'taarunyam-dashboard',
+            FOOTER: 'taarunyam-footer',
+            CONTACT: 'taarunyam-contact'
+        };
+        
+        const courses = [
+            "B.Tech Computer Science & Engineering",
+            "B.Tech Information Technology",
+            "B.Tech Electronics & Communication",
+            "B.Tech Mechanical Engineering",
+            "B.Tech Civil Engineering",
+            "B.Tech Electrical Engineering",
+            "B.Tech Chemical Engineering",
+            "B.Tech Biotechnology",
+            "B.Tech Artificial Intelligence",
+            "B.Tech Data Science",
+            "B.Tech Cyber Security",
+            "B.Tech Robotics",
+            "B.Tech Aerospace Engineering",
+            "B.Tech Automobile Engineering",
+            "B.Tech Food Technology",
+            "BCA (Bachelor of Computer Applications)",
+            "B.Sc Computer Science",
+            "B.Sc Information Technology",
+            "B.Sc Electronics",
+            "B.Sc Mathematics",
+            "B.Sc Physics",
+            "B.Sc Chemistry",
+            "MCA (Master of Computer Applications)",
+            "M.Tech Computer Science",
+            "M.Tech Information Technology",
+            "MBA (IT)",
+            "Diploma in Computer Science",
+            "Diploma in Electronics",
+            "Diploma in Mechanical",
+            "Other (Please specify in College field)"
+        ];
+        
+        // ========== ENHANCED DEFAULT CERTIFICATE CONTENT ==========
+        const defaultCertificates = {
+            participation: {
+                title: 'Certificate of Participation',
+                mainText: 'This is to certify that <strong>{name}</strong> has successfully participated in the event <strong>"{event}"</strong> during TAARUNYAM 2025, the Annual Technical Symposium. This certificate recognizes their enthusiasm, dedication, and contribution to the field of technology.',
+                subText: 'We appreciate your active involvement and commend your efforts in embracing technological challenges.',
+                coordinator: 'Dr. Anjali Sharma',
+                coordinatorTitle: 'Event Coordinator',
+                director: 'Prof. Rajesh Verma',
+                directorTitle: 'Head, Department of Computer Science',
+                eventDetails: 'Organized by Tech Innovation Society\nMarch 15, 2025 | Tech Campus Auditorium',
+                sealText: 'TAARUNYAM\n2025'
+            },
+            winner: {
+                title: 'Certificate of Excellence',
+                mainText: 'This certificate proudly recognizes <strong>{name}</strong> for securing the <strong>1st Position</strong> in the <strong>"{event}"</strong> competition at TAARUNYAM 2025. This achievement demonstrates exceptional skill, innovation, and mastery in the field of technology.',
+                achievementText: 'For outstanding performance and technical expertise',
+                executive: 'Mr. Vikram Singh',
+                executiveTitle: 'Executive Director, Technical Affairs',
+                headTech: 'Dr. Meera Nair',
+                headTechTitle: 'Head of Technology',
+                eventDetails: 'Annual Technical Championship\nMarch 15, 2025 | Innovation Award Ceremony',
+                sealText: 'EXCELLENCE\nAWARD'
+            }
+        };
+        
+        const defaultEvents = [
+            {
+                id: 'code-rush',
+                title: 'Code Rush',
+                description: 'Fast-paced competitive programming challenge. Solve algorithmic problems against the clock.',
+                category: 'Programming',
+                icon: 'code',
+                maxParticipants: 50,
+                prizes: ['₹10,000', '₹5,000', '₹2,500'],
+                eventDate: '2025-03-15T10:00:00',
+            },
+            {
+                id: 'tech-quiz',
+                title: 'Tech Quiz',
+                description: 'Ultimate technology knowledge test covering latest trends and fundamental concepts.',
+                category: 'Knowledge',
+                icon: 'brain',
+                maxParticipants: 100,
+                prizes: ['₹8,000', '₹4,000', '₹2,000'],
+                eventDate: '2025-03-15T11:30:00',
+            },
+            {
+                id: 'hackathon',
+                title: 'Hackathon',
+                description: '24-hour intensive coding marathon. Build innovative solutions to real-world problems.',
+                category: 'Innovation',
+                icon: 'zap',
+                maxParticipants: 80,
+                prizes: ['₹25,000', '₹15,000', '₹8,000'],
+                eventDate: '2025-03-15T09:00:00',
+            },
+            {
+                id: 'web-master',
+                title: 'Web Master',
+                description: 'Design and develop stunning websites. Showcase your frontend and backend skills.',
+                category: 'Web Development',
+                icon: 'globe',
+                maxParticipants: 60,
+                prizes: ['₹12,000', '₹7,000', '₹3,500'],
+                eventDate: '2025-03-15T14:00:00',
+            },
+            {
+                id: 'debug-dash',
+                title: 'Debug Dash',
+                description: 'Race against time to find and fix bugs in complex codebases.',
+                category: 'Problem Solving',
+                icon: 'bug',
+                maxParticipants: 40,
+                prizes: ['₹6,000', '₹3,500', '₹1,500'],
+                eventDate: '2025-03-15T16:00:00',
+            },
+            {
+                id: 'ai-challenge',
+                title: 'AI Challenge',
+                description: 'Develop AI solutions using machine learning and deep learning techniques.',
+                category: 'Artificial Intelligence',
+                icon: 'cpu',
+                maxParticipants: 30,
+                prizes: ['₹20,000', '₹12,000', '₹6,000'],
+                eventDate: '2025-03-15T15:30:00',
+            }
+        ];
+        
+        const defaultDashboard = {
+            mainTitle: 'TAARUNYAM',
+            subtitle: 'Tech Event 2025',
+            description: 'The Ultimate Technology Championship<br/><span class="text-primary-glow font-medium">Where Innovation Meets Competition</span>',
+            eventDate: 'March 15, 2025',
+            eventVenue: 'Tech Campus Auditorium',
+            categoriesText: '6 Exciting Events',
+            countdownDate: '2025-03-15T09:00:00'
+        };
+        
+        const defaultFooter = {
+            description: 'The Ultimate Tech Championship celebrating innovation, creativity, and technological excellence.',
+            extraInfo: 'Organized by Tech Innovation Society.<br>All participants must follow code of conduct.',
+            copyright: '© 2025 TAARUNYAM Tech Event. All rights reserved.'
+        };
+        
+        const defaultContact = {
+            email: 'contact@taarunyam2025.com',
+            phone: '+91 98765 43210',
+            location: 'Tech Campus, Innovation City'
+        };
+        
+        const categories = ['All', 'Programming', 'Knowledge', 'Innovation', 'Web Development', 'Problem Solving', 'Artificial Intelligence'];
+        
+        // ========== APPLICATION STATE ==========
+        let participants = JSON.parse(localStorage.getItem(STORAGE_KEYS.PARTICIPANTS)) || [];
+        let events = JSON.parse(localStorage.getItem(STORAGE_KEYS.EVENTS)) || defaultEvents;
+        let certificates = JSON.parse(localStorage.getItem(STORAGE_KEYS.CERTIFICATES)) || defaultCertificates;
+        let dashboard = JSON.parse(localStorage.getItem(STORAGE_KEYS.DASHBOARD)) || defaultDashboard;
+        let footer = JSON.parse(localStorage.getItem(STORAGE_KEYS.FOOTER)) || defaultFooter;
+        let contact = JSON.parse(localStorage.getItem(STORAGE_KEYS.CONTACT)) || defaultContact;
+        let selectedCategory = 'All';
+        let searchQuery = '';
+        let currentAdminTab = 'participants';
+        let formListenersAttached = false;
+        
+        // ========== INITIALIZATION ==========
+        document.addEventListener('DOMContentLoaded', () => {
+            lucide.createIcons();
+            initParticles();
+            initCountdown();
+            loadWebsiteContent();
+            renderEventFilters();
+            renderEvents();
+            renderRegistrationFormEvents();
+            populateCourseDropdown();
+            setupAdminForms();
+            
+            window.addEventListener('scroll', () => {
+                const header = document.getElementById('main-header');
+                if (window.scrollY > 50) {
+                    header.classList.add('bg-glass', 'backdrop-blur-xl', 'border-b', 'border-glass-border');
+                    header.classList.remove('bg-transparent');
+                } else {
+                    header.classList.remove('bg-glass', 'backdrop-blur-xl', 'border-b', 'border-glass-border');
+                    header.classList.add('bg-transparent');
+                }
+            });
+            
+            document.getElementById('event-search').addEventListener('input', (e) => {
+                searchQuery = e.target.value.toLowerCase();
+                renderEvents();
+            });
+            
+            const adminSearch = document.getElementById('admin-search');
+            if (adminSearch) {
+                adminSearch.addEventListener('input', (e) => {
+                    renderAdminParticipants(e.target.value.toLowerCase());
+                });
+            }
+            
+            document.getElementById('registration-form').addEventListener('submit', handleRegistration);
+        });
+        
+        // ========== WEBSITE CONTENT MANAGEMENT ==========
+        function loadWebsiteContent() {
+            document.getElementById('main-title').innerHTML = dashboard.mainTitle;
+            document.getElementById('main-subtitle').textContent = dashboard.subtitle;
+            document.getElementById('main-description').innerHTML = dashboard.description;
+            document.getElementById('event-date').textContent = dashboard.eventDate;
+            document.getElementById('event-venue').textContent = dashboard.eventVenue;
+            document.getElementById('event-categories').textContent = dashboard.categoriesText;
+            
+            document.getElementById('footer-description').innerHTML = footer.description;
+            document.getElementById('footer-extra').innerHTML = footer.extraInfo;
+            document.getElementById('footer-copyright').textContent = footer.copyright;
+            
+            document.getElementById('contact-email').textContent = contact.email;
+            document.getElementById('contact-phone').textContent = contact.phone;
+            document.getElementById('contact-location').textContent = contact.location;
+        }
+        
+        function populateCourseDropdown() {
+            const courseSelect = document.querySelector('#registration-form select[name="course"]');
+            if (courseSelect) {
+                let options = '<option value="" disabled selected>Select your course</option>';
+                courses.forEach(course => {
+                    options += `<option value="${course}">${course}</option>`;
+                });
+                courseSelect.innerHTML = options;
+            }
+        }
+        
+        // ========== NAVIGATION ==========
+        function scrollToSection(id) {
+            const el = document.getElementById(id);
+            if (el) el.scrollIntoView({ behavior: 'smooth' });
+            const mobileMenu = document.getElementById('mobile-menu');
+            if (!mobileMenu.classList.contains('hidden')) {
+                mobileMenu.classList.add('hidden');
+            }
+        }
+        
+        function toggleMobileMenu() {
+            document.getElementById('mobile-menu').classList.toggle('hidden');
+        }
+        
+        // ========== VISUAL EFFECTS ==========
+        function initParticles() {
+            const container = document.getElementById('particles-container');
+            for (let i = 0; i < 50; i++) {
+                const p = document.createElement('div');
+                p.className = 'particle';
+                p.style.left = `${Math.random() * 100}%`;
+                p.style.animationDelay = `${Math.random() * 20}s`;
+                container.appendChild(p);
+            }
+        }
+        
+        function initCountdown() {
+            const target = new Date(dashboard.countdownDate);
+            
+            const update = () => {
+                const diff = target - new Date();
+                const d = Math.floor(diff / (1000 * 60 * 60 * 24));
+                const h = Math.floor((diff / (1000 * 60 * 60)) % 24);
+                const m = Math.floor((diff / 1000 / 60) % 60);
+                const s = Math.floor((diff / 1000) % 60);
+                
+                const container = document.getElementById('countdown');
+                if (diff > 0) {
+                    container.innerHTML = `
+                        ${renderTimeBlock(d, 'Days')}
+                        ${renderTimeBlock(h, 'Hours')}
+                        ${renderTimeBlock(m, 'Minutes')}
+                        ${renderTimeBlock(s, 'Seconds')}
+                    `;
+                } else {
+                    container.innerHTML = `<div class="text-white text-xl font-bold">Event Started!</div>`;
+                }
+            };
+            
+            setInterval(update, 1000);
+            update();
+        }
+        
+        function renderTimeBlock(val, label) {
+            return `
+                <div class="text-center">
+                    <div class="countdown-digit rounded-xl p-4 min-w-[70px] md:min-w-[80px] flex items-center justify-center">
+                        <span class="text-2xl md:text-3xl font-bold text-white">${val.toString().padStart(2, '0')}</span>
+                    </div>
+                    <p class="text-sm text-muted-foreground mt-2 font-medium">${label}</p>
+                </div>
+            `;
+        }
+        
+        // ========== EVENTS MANAGEMENT ==========
+        function renderEventFilters() {
+            const container = document.getElementById('category-filters');
+            const uniqueCategories = ['All', ...new Set(events.map(e => e.category))];
+            
+            container.innerHTML = uniqueCategories.map(cat => `
+                <button onclick="filterCategory('${cat}')"
+                    class="px-4 py-1.5 rounded-full text-xs font-medium border transition-all ${selectedCategory === cat
+                        ? 'bg-gradient-primary text-white border-transparent'
+                        : 'border-glass-border text-muted-foreground hover:text-white bg-transparent'}">
+                    ${cat}
+                </button>
+            `).join('');
+        }
+        
+        function filterCategory(cat) {
+            selectedCategory = cat;
+            renderEventFilters();
+            renderEvents();
+        }
+        
+        function renderEvents() {
+            const grid = document.getElementById('events-grid');
+            const filtered = events.filter(ev => {
+                const matchCat = selectedCategory === 'All' || ev.category === selectedCategory;
+                const matchSearch = ev.title.toLowerCase().includes(searchQuery) || ev.description.toLowerCase().includes(searchQuery);
+                return matchCat && matchSearch;
+            });
+            
+            if (filtered.length === 0) {
+                grid.innerHTML = `<div class="col-span-full text-center text-muted-foreground py-10">No events found.</div>`;
+                return;
+            }
+            
+            grid.innerHTML = filtered.map(ev => {
+                const icon = ev.icon || ev.title.charAt(0).toLowerCase();
+                return `
+                <div class="glass-card group hover:scale-[1.02] transition-all duration-300 rounded-xl overflow-hidden flex flex-col relative">
+                    <div class="absolute inset-0 bg-gradient-primary opacity-0 group-hover:opacity-10 transition-opacity pointer-events-none"></div>
+                    <div class="p-6 relative z-10 flex-1">
+                        <div class="flex items-center justify-between mb-4">
+                            <div class="p-3 rounded-lg bg-primary/20 border border-primary/30">
+                                <i data-lucide="${icon}" class="w-6 h-6 text-primary"></i>
+                            </div>
+                            <span class="text-xs font-semibold px-2.5 py-0.5 rounded-full bg-secondary/20 text-secondary-foreground border border-secondary/30">${ev.category}</span>
+                        </div>
+                        <h3 class="text-xl font-bold mb-2 group-hover:text-primary-glow transition-colors text-white">${ev.title}</h3>
+                        <p class="text-muted-foreground text-sm line-clamp-2">${ev.description}</p>
+                        <div class="mt-4 space-y-2 text-sm text-muted-foreground">
+                            <div class="flex items-center gap-2"><i data-lucide="calendar" class="w-4 h-4"></i> ${new Date(ev.eventDate).toDateString()}</div>
+                            <div class="flex items-center gap-2"><i data-lucide="trophy" class="w-4 h-4 text-winner"></i> <span class="text-winner">${Array.isArray(ev.prizes) ? ev.prizes[0] : ev.prizes}</span></div>
+                        </div>
+                    </div>
+                    <div class="p-6 pt-0 relative z-10 flex gap-2">
+                        <button onclick="openEventModal('${ev.id}')" class="flex-1 border border-glass-border bg-glass hover:bg-glass-hover text-white py-2 rounded-lg text-sm">Details</button>
+                        <button onclick="openRegModal('${ev.id}')" class="flex-1 bg-gradient-primary text-white font-medium py-2 rounded-lg text-sm shadow-glow hover:shadow-glow-accent">Register</button>
+                    </div>
+                </div>
+            `;
+            }).join('');
+            lucide.createIcons();
+        }
+        
+        // ========== MODAL FUNCTIONS ==========
+        function openModal(id) {
+            document.getElementById(id).classList.remove('hidden');
+        }
+        
+        function closeModal(id) {
+            document.getElementById(id).classList.add('hidden');
+        }
+        
+        function openEventModal(eventId) {
+            const ev = events.find(e => e.id === eventId);
+            if (!ev) return;
+            
+            const content = document.getElementById('event-modal-content');
+            const icon = ev.icon || ev.title.charAt(0).toLowerCase();
+            
+            content.innerHTML = `
+                <div class="flex items-center gap-4 mb-4">
+                    <div class="p-4 rounded-xl bg-primary/20 border border-primary/30">
+                        <i data-lucide="${icon}" class="w-8 h-8 text-primary"></i>
+                    </div>
+                    <div>
+                        <h3 class="text-2xl font-bold text-white glow-text">${ev.title}</h3>
+                        <span class="text-xs bg-secondary/20 text-secondary-foreground px-2 py-1 rounded border border-secondary/30">${ev.category}</span>
+                    </div>
+                </div>
+                <p class="text-gray-300 mb-6">${ev.description}</p>
+                <div class="grid grid-cols-2 gap-4 mb-6">
+                    <div class="glass-card p-3 rounded text-sm text-gray-300">
+                        <div class="font-bold text-white mb-1">Prizes</div>
+                        ${Array.isArray(ev.prizes) ? ev.prizes.join(', ') : ev.prizes}
+                    </div>
+                    <div class="glass-card p-3 rounded text-sm text-gray-300">
+                        <div class="font-bold text-white mb-1">Participants</div>
+                        Max ${ev.maxParticipants || 'Unlimited'}
+                    </div>
+                </div>
+                <div class="flex justify-end gap-2">
+                    <button onclick="closeModal('event-modal')" class="px-4 py-2 border border-glass-border rounded-lg text-white hover:bg-white/10">Close</button>
+                    <button onclick="closeModal('event-modal'); openRegModal('${ev.id}')" class="px-4 py-2 bg-gradient-primary rounded-lg text-white font-medium">Register Now</button>
+                </div>
+            `;
+            lucide.createIcons();
+            openModal('event-modal');
+        }
+        
+        function renderRegistrationFormEvents() {
+            const container = document.getElementById('reg-events-list');
+            container.innerHTML = events.map(ev => `
+                <div class="flex items-center space-x-3 p-3 rounded-lg glass-card">
+                    <input type="checkbox" id="reg-check-${ev.id}" value="${ev.id}" class="w-4 h-4 accent-primary">
+                    <label for="reg-check-${ev.id}" class="cursor-pointer text-sm">
+                        <div class="font-medium text-white">${ev.title}</div>
+                        <div class="text-xs text-muted-foreground">${ev.category}</div>
+                    </label>
+                </div>
+            `).join('');
+        }
+        
+        function openRegModal(preselectId) {
+            document.getElementById('registration-form').reset();
+            document.querySelectorAll('#reg-events-list input').forEach(input => input.checked = false);
+            
+            const courseSelect = document.querySelector('#registration-form select[name="course"]');
+            const yearSelect = document.querySelector('#registration-form select[name="year"]');
+            if (courseSelect) courseSelect.selectedIndex = 0;
+            if (yearSelect) yearSelect.selectedIndex = 0;
+            
+            if (preselectId) {
+                const chk = document.getElementById(`reg-check-${preselectId}`);
+                if(chk) chk.checked = true;
+            }
+            openModal('reg-modal');
+        }
+        
+        // ========== REGISTRATION HANDLING ==========
+        function handleRegistration(e) {
+            e.preventDefault();
+            const formData = new FormData(e.target);
+            const selectedEvents = Array.from(document.querySelectorAll('#reg-events-list input:checked')).map(cb => cb.value);
+            
+            if (selectedEvents.length === 0) {
+                showToast('Error', 'Please select at least one event');
+                return;
+            }
+            
+            const newParticipant = {
+                id: 'TR-' + Date.now() + Math.floor(Math.random() * 1000),
+                name: formData.get('name'),
+                email: formData.get('email'),
+                mobile: formData.get('mobile'),
+                college: formData.get('college'),
+                course: formData.get('course'),
+                year: formData.get('year'),
+                events: selectedEvents,
+                registeredAt: new Date().toLocaleDateString('en-IN', { day: '2-digit', month: '2-digit', year: 'numeric' }),
+                isWinner: false,
+                winnerEvent: null
+            };
+            
+            participants.push(newParticipant);
+            localStorage.setItem(STORAGE_KEYS.PARTICIPANTS, JSON.stringify(participants));
+            
+            closeModal('reg-modal');
+            showToast('Success! 🎉', 'Registration successful. Preview your certificate!');
+            
+            openCertificatePreview(newParticipant.id, selectedEvents[0], 'participation');
+            
+            if(!document.getElementById('admin-modal').classList.contains('hidden')) {
+                renderAdminStats();
+                renderAdminParticipants();
+            }
+        }
+        
+        // ========== ENHANCED CERTIFICATE SYSTEM ==========
+        function openCertificatePreview(participantId, eventId, type = 'participation') {
+            const p = participants.find(x => x.id === participantId);
+            const ev = events.find(x => x.id === eventId);
+            
+            if(!p || !ev) return;
+            const target = document.getElementById('certificate-render-target');
+            
+            if (type === 'participation') {
+                target.innerHTML = getParticipationTemplate(p, ev);
+            } else {
+                target.innerHTML = getWinnerTemplate(p, ev);
+            }
+            
+            openModal('cert-modal');
+        }
+        
+        function getParticipationTemplate(p, ev) {
+            const cert = certificates.participation;
+            const mainText = cert.mainText
+                .replace('{name}', p.name)
+                .replace('{college}', p.college)
+                .replace('{event}', ev.title);
+            
+            return `
+                <div class="w-[1123px] h-[794px] bg-gradient-to-br from-white to-blue-50 relative overflow-hidden font-poppins flex flex-col items-center justify-between p-12 shadow-2xl border-8 border-white">
+                    
+                    <div class="absolute top-0 left-0 w-full h-3 bg-gradient-to-r from-blue-600 via-blue-500 to-blue-600"></div>
+                    <div class="absolute bottom-0 left-0 w-full h-3 bg-gradient-to-r from-blue-600 via-blue-500 to-blue-600"></div>
+                    
+                    <div class="absolute top-10 left-10 w-32 h-32 opacity-10">
+                        <div class="text-6xl font-bold text-blue-300 rotate-12">T</div>
+                    </div>
+                    
+                    <div class="absolute bottom-10 right-10 w-32 h-32 opacity-10">
+                        <div class="text-6xl font-bold text-blue-300 -rotate-12">2025</div>
+                    </div>
+                    
+                    <div class="text-center w-full mt-4">
+                        <div class="flex items-center justify-center gap-3 mb-4">
+                            <div class="w-16 h-16 bg-gradient-to-br from-blue-600 to-blue-800 rounded-full flex items-center justify-center">
+                                <div class="text-2xl font-bold text-white">T</div>
+                            </div>
+                            <div>
+                                <h1 class="text-4xl font-bold text-blue-900 tracking-wider">TAARUNYAM</h1>
+                                <p class="text-sm text-blue-600 font-medium">ANNUAL TECHNICAL SYMPOSIUM 2025</p>
+                            </div>
+                        </div>
+                        
+                        <div class="h-1 w-48 mx-auto bg-gradient-to-r from-transparent via-blue-500 to-transparent mb-6"></div>
+                        
+                        <h2 class="text-5xl font-playfair font-bold text-blue-800 uppercase tracking-widest mb-2">
+                            ${cert.title}
+                        </h2>
+                    </div>
+                    
+                    <div class="text-center flex-1 flex flex-col justify-center gap-6 px-20">
+                        <p class="text-xl text-gray-600 italic font-light mb-4">
+                            This certificate is proudly presented to
+                        </p>
+                        
+                        <div class="relative mb-6">
+                            <h3 class="text-6xl font-bold text-gray-900 leading-tight mb-4 font-playfair border-b-4 border-blue-200 pb-4">
+                                ${p.name}
+                            </h3>
+                            <p class="text-lg text-blue-700 font-medium mt-2">
+                                ${p.college}
+                            </p>
+                        </div>
+                        
+                        <div class="text-lg text-gray-700 leading-relaxed max-w-2xl mx-auto mb-6">
+                            ${mainText}
+                        </div>
+                        
+                        <p class="text-base text-gray-600 italic font-light max-w-2xl mx-auto mb-8">
+                            ${cert.subText || 'We appreciate your active involvement and commend your efforts in embracing technological challenges.'}
+                        </p>
+                        
+                        <div class="grid grid-cols-2 gap-8 mt-4 text-center max-w-2xl mx-auto">
+                            <div class="glass-card bg-blue-50/50 p-4 rounded-xl border border-blue-100">
+                                <span class="text-xs text-blue-500 uppercase font-bold block mb-1">Registration ID</span>
+                                <div class="text-xl font-mono font-bold text-gray-800">${p.id}</div>
+                            </div>
+                            <div class="glass-card bg-blue-50/50 p-4 rounded-xl border border-blue-100">
+                                <span class="text-xs text-blue-500 uppercase font-bold block mb-1">Date of Participation</span>
+                                <div class="text-xl font-bold text-gray-800">${new Date(p.registeredAt).toLocaleDateString('en-IN', { day: 'numeric', month: 'long', year: 'numeric' })}</div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="w-full flex justify-between items-end mt-8 px-16">
+                        <div class="text-center">
+                            <div class="w-64 h-16 mb-2 border-t-2 border-gray-400 pt-2 font-handwriting text-3xl text-blue-900">
+                                ${cert.coordinator}
+                            </div>
+                            <p class="text-sm font-bold text-gray-500 uppercase tracking-wider">${cert.coordinatorTitle || 'Event Coordinator'}</p>
+                        </div>
+                        
+                        <div class="text-center">
+                            <div class="w-32 h-32 rounded-full border-4 border-dashed border-blue-300 flex items-center justify-center text-center">
+                                <div class="text-blue-700 font-bold text-sm leading-tight">
+                                    ${cert.sealText || 'TAARUNYAM\\n2025'}
+                                </div>
+                            </div>
+                            <p class="text-xs text-gray-500 mt-2">Official Seal</p>
+                        </div>
+                        
+                        <div class="text-center">
+                            <div class="w-64 h-16 mb-2 border-t-2 border-gray-400 pt-2 font-handwriting text-3xl text-blue-900">
+                                ${cert.director}
+                            </div>
+                            <p class="text-sm font-bold text-gray-500 uppercase tracking-wider">${cert.directorTitle || 'Director'}</p>
+                        </div>
+                    </div>
+                    
+                    <div class="mt-6 text-center">
+                        <p class="text-sm text-gray-500 whitespace-pre-line">${cert.eventDetails || 'Organized by Tech Innovation Society\\nMarch 15, 2025 | Tech Campus Auditorium'}</p>
+                    </div>
+                </div>
+            `;
+        }
+        
+        function getWinnerTemplate(p, ev) {
+            const cert = certificates.winner;
+            const mainText = cert.mainText
+                .replace('{name}', p.name)
+                .replace('{college}', p.college)
+                .replace('{event}', ev.title);
+            
+            return `
+                <div class="w-[1123px] h-[794px] bg-white relative overflow-hidden font-playfair text-gray-900 flex flex-col items-center justify-between p-12 border-[20px] border-double border-[#D4AF37]">
+                    
+                    <div class="absolute top-0 left-0 w-32 h-32 border-t-8 border-l-8 border-blue-900"></div>
+                    <div class="absolute bottom-0 right-0 w-32 h-32 border-b-8 border-r-8 border-blue-900"></div>
+                    
+                    <div class="text-center mt-8 z-10">
+                        <div class="text-[#D4AF37] tracking-[0.3em] font-sans text-sm font-bold mb-4 uppercase">Taarunyam 2025 • Excellence Award</div>
+                        <h1 class="text-6xl font-bold text-blue-900 mb-2 uppercase">${cert.title}</h1>
+                    </div>
+                    
+                    <div class="absolute top-16 right-20">
+                        <div class="w-24 h-24 bg-gradient-to-br from-yellow-400 to-yellow-600 rounded-full flex items-center justify-center shadow-lg text-white font-bold text-center text-xs p-2 border-4 border-white ring-4 ring-yellow-200">
+                            WINNER<br>${ev.title}
+                        </div>
+                    </div>
+                    
+                    <div class="text-center flex flex-col items-center gap-4 z-10 w-full px-20">
+                        <p class="font-sans text-gray-500 text-lg uppercase tracking-wider">This Honorable Achievement is presented to</p>
+                        
+                        <h3 class="text-6xl text-black font-bold italic mb-4 py-4 px-8 border-b-2 border-[#D4AF37] min-w-[600px]">
+                            ${p.name}
+                        </h3>
+                        
+                        <p class="text-xl text-gray-600 max-w-4xl leading-relaxed font-sans">
+                            ${mainText}
+                        </p>
+                        
+                        <div class="mt-6 flex gap-8 font-sans text-sm text-gray-500 bg-gray-50 py-2 px-6 rounded-full border border-gray-200">
+                            <span>ID: <strong>${p.id}</strong></span>
+                            <span>•</span>
+                            <span>College: <strong>${p.college}</strong></span>
+                            <span>•</span>
+                            <span>Date: <strong>March 15, 2025</strong></span>
+                        </div>
+                    </div>
+                    
+                    <div class="w-full flex justify-between items-end mt-8 px-12 z-10">
+                        <div class="text-center">
+                            <div class="w-56 h-px bg-gray-400"></div>
+                            <p class="mt-2 text-sm font-sans font-bold text-blue-900 uppercase">${cert.executiveTitle || 'Executive Director'}</p>
+                        </div>
+                        
+                        <div class="text-center">
+                            <div class="w-16 h-16 mx-auto mb-2 text-[#D4AF37]">
+                                <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"></path></svg>
+                            </div>
+                        </div>
+                        
+                        <div class="text-center">
+                            <div class="w-56 h-px bg-gray-400"></div>
+                            <p class="mt-2 text-sm font-sans font-bold text-blue-900 uppercase">${cert.headTechTitle || 'Head of Technology'}</p>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+        
+        // ========== CERTIFICATE DOWNLOAD ==========
+        async function downloadCert(format) {
+            const element = document.getElementById('certificate-render-target');
+            showToast('Processing...', 'Generating your certificate');
+            try {
+                const canvas = await html2canvas(element, {
+                    scale: 2,
+                    useCORS: true,
+                    backgroundColor: '#ffffff'
+                });
+                
+                const imgData = canvas.toDataURL('image/png');
+                const p = participants.find(x => 
+                    x.name === element.querySelector('.font-playfair')?.textContent.trim() || 
+                    element.textContent.includes(x.name)
+                );
+                
+                const filename = p ? `${p.name.replace(/\s+/g, '_')}_Taarunyam_Certificate` : 'Taarunyam_Certificate';
+                
+                if (format === 'png') {
+                    const link = document.createElement('a');
+                    link.download = `${filename}.png`;
+                    link.href = imgData;
+                    link.click();
+                } else if (format === 'pdf') {
+                    const { jsPDF } = window.jspdf;
+                    const pdf = new jsPDF('l', 'mm', 'a4');
+                    const width = pdf.internal.pageSize.getWidth();
+                    const height = pdf.internal.pageSize.getHeight();
+                    pdf.addImage(imgData, 'PNG', 0, 0, width, height);
+                    pdf.save(`${filename}.pdf`);
+                }
+                
+                showToast('Success', 'Certificate downloaded successfully');
+            } catch (err) {
+                console.error(err);
+                showToast('Error', 'Failed to generate certificate');
+            }
+        }
+        
+        // ========== PROFESSIONAL PDF EXPORT ==========
+        async function exportParticipantsPDF() {
+            showToast('Processing', 'Generating professional report...');
+            
+            try {
+                const { jsPDF } = window.jspdf;
+                const doc = new jsPDF('p', 'mm', 'a4');
+                
+                // ========== COVER PAGE ==========
+                doc.setFillColor(30, 41, 59);
+                doc.rect(0, 0, 210, 297, 'F');
+                
+                doc.setTextColor(255, 255, 255);
+                doc.setFontSize(36);
+                doc.setFont('helvetica', 'bold');
+                doc.text('TAARUNYAM 2025', 105, 60, { align: 'center' });
+                
+                doc.setFontSize(20);
+                doc.text('PARTICIPANTS REPORT', 105, 80, { align: 'center' });
+                
+                doc.setFontSize(12);
+                doc.text(`Report Generated: ${new Date().toLocaleDateString('en-IN', { 
+                    weekday: 'long', 
+                    year: 'numeric', 
+                    month: 'long', 
+                    day: 'numeric',
+                    hour: '2-digit',
+                    minute: '2-digit'
+                })}`, 105, 110, { align: 'center' });
+                
+                doc.setFillColor(59, 130, 246, 0.8);
+                doc.roundedRect(50, 130, 110, 60, 3, 3, 'F');
+                doc.setTextColor(255, 255, 255);
+                doc.setFontSize(14);
+                doc.text('REPORT SUMMARY', 105, 140, { align: 'center' });
+                
+                doc.setFontSize(11);
+                doc.text(`Total Participants: ${participants.length}`, 105, 155, { align: 'center' });
+                doc.text(`Total Winners: ${participants.filter(p => p.isWinner).length}`, 105, 165, { align: 'center' });
+                doc.text(`Total Events: ${events.length}`, 105, 175, { align: 'center' });
+                
+                doc.addPage();
+                
+                // ========== TABLE OF CONTENTS ==========
+                doc.setFillColor(30, 41, 59);
+                doc.rect(0, 0, 210, 20, 'F');
+                doc.setTextColor(255, 255, 255);
+                doc.setFontSize(16);
+                doc.text('TABLE OF CONTENTS', 105, 13, { align: 'center' });
+                
+                let yPos = 40;
+                doc.setTextColor(0, 0, 0);
+                doc.setFontSize(12);
+                
+                doc.text('1. Executive Summary', 20, yPos);
+                yPos += 10;
+                doc.text('2. Event-wise Participation', 20, yPos);
+                yPos += 10;
+                
+                events.forEach((event, idx) => {
+                    doc.text(`  2.${idx + 1} ${event.title}`, 30, yPos);
+                    yPos += 8;
+                });
+                
+                doc.text('3. Winner Details', 20, yPos);
+                yPos += 10;
+                doc.text('4. Complete Participant List', 20, yPos);
+                
+                doc.addPage();
+                
+                // ========== EXECUTIVE SUMMARY ==========
+                doc.setFillColor(30, 41, 59);
+                doc.rect(0, 0, 210, 20, 'F');
+                doc.setTextColor(255, 255, 255);
+                doc.setFontSize(16);
+                doc.text('EXECUTIVE SUMMARY', 105, 13, { align: 'center' });
+                
+                yPos = 40;
+                doc.setTextColor(0, 0, 0);
+                doc.setFontSize(11);
+                
+                const stats = {
+                    totalParticipants: participants.length,
+                    uniqueColleges: new Set(participants.map(p => p.college)).size,
+                    avgEventsPerParticipant: (participants.reduce((sum, p) => sum + p.events.length, 0) / participants.length).toFixed(1),
+                    winnersByEvent: {}
+                };
+                
+                events.forEach(event => {
+                    const eventParticipants = participants.filter(p => p.events.includes(event.id));
+                    const winners = eventParticipants.filter(p => p.isWinner && p.winnerEvent === event.id);
+                    stats.winnersByEvent[event.title] = winners.length;
+                });
+                
+                doc.setFont('helvetica', 'bold');
+                doc.text('Overall Statistics:', 20, yPos);
+                yPos += 8;
+                doc.setFont('helvetica', 'normal');
+                
+                doc.text(`• Total Registered Participants: ${stats.totalParticipants}`, 25, yPos);
+                yPos += 7;
+                doc.text(`• Number of Colleges/Institutes: ${stats.uniqueColleges}`, 25, yPos);
+                yPos += 7;
+                doc.text(`• Average Events per Participant: ${stats.avgEventsPerParticipant}`, 25, yPos);
+                yPos += 7;
+                doc.text(`• Total Winners: ${participants.filter(p => p.isWinner).length}`, 25, yPos);
+                yPos += 15;
+                
+                doc.setFont('helvetica', 'bold');
+                doc.text('Event-wise Participation:', 20, yPos);
+                yPos += 10;
+                
+                const eventSummaryData = events.map(event => {
+                    const eventParticipants = participants.filter(p => p.events.includes(event.id));
+                    const winners = eventParticipants.filter(p => p.isWinner && p.winnerEvent === event.id);
+                    return [
+                        event.title,
+                        eventParticipants.length.toString(),
+                        winners.length.toString(),
+                        event.category,
+                        new Date(event.eventDate).toLocaleDateString()
+                    ];
+                });
+                
+                doc.autoTable({
+                    startY: yPos,
+                    head: [['Event', 'Participants', 'Winners', 'Category', 'Date']],
+                    body: eventSummaryData,
+                    theme: 'striped',
+                    headStyles: { 
+                        fillColor: [30, 41, 59],
+                        textColor: [255, 255, 255],
+                        fontStyle: 'bold'
+                    },
+                    styles: { fontSize: 9 },
+                    margin: { left: 20, right: 20 }
+                });
+                
+                yPos = doc.lastAutoTable.finalY + 10;
+                
+                // ========== EVENT-WISE DETAILED REPORTS ==========
+                events.forEach((event, eventIndex) => {
+                    if (eventIndex > 0) doc.addPage();
+                    
+                    doc.setFillColor(30, 41, 59);
+                    doc.rect(0, 0, 210, 20, 'F');
+                    doc.setTextColor(255, 255, 255);
+                    doc.setFontSize(14);
+                    doc.text(`EVENT: ${event.title.toUpperCase()}`, 105, 13, { align: 'center' });
+                    
+                    yPos = 30;
+                    doc.setTextColor(100, 116, 139);
+                    doc.setFontSize(9);
+                    doc.text(`Category: ${event.category} | Date: ${new Date(event.eventDate).toLocaleDateString()} | Max Participants: ${event.maxParticipants}`, 105, yPos, { align: 'center' });
+                    
+                    yPos += 15;
+                    
+                    const eventParticipants = participants.filter(p => p.events.includes(event.id));
+                    const winners = eventParticipants.filter(p => p.isWinner && p.winnerEvent === event.id);
+                    const participantsOnly = eventParticipants.filter(p => !winners.includes(p));
+                    
+                    // Winners Section
+                    if (winners.length > 0) {
+                        doc.setTextColor(202, 138, 4);
+                        doc.setFontSize(12);
+                        doc.setFont('helvetica', 'bold');
+                        doc.text('🏆 WINNERS', 20, yPos);
+                        yPos += 7;
+                        
+                        const winnerData = winners.map(p => [
+                            p.name,
+                            p.college,
+                            p.course || 'Not specified',
+                            p.year || 'N/A',
+                            p.email
+                        ]);
+                        
+                        doc.autoTable({
+                            startY: yPos,
+                            head: [['Name', 'College', 'Course', 'Year', 'Email']],
+                            body: winnerData,
+                            theme: 'striped',
+                            headStyles: { 
+                                fillColor: [202, 138, 4],
+                                textColor: [255, 255, 255]
+                            },
+                            styles: { fontSize: 8 },
+                            margin: { left: 20, right: 20 }
+                        });
+                        
+                        yPos = doc.lastAutoTable.finalY + 10;
+                    }
+                    
+                    // Participants Section
+                    if (participantsOnly.length > 0) {
+                        doc.setTextColor(30, 64, 175);
+                        doc.setFontSize(12);
+                        doc.setFont('helvetica', 'bold');
+                        doc.text('📋 PARTICIPANTS', 20, yPos);
+                        yPos += 7;
+                        
+                        const participantData = participantsOnly.map(p => [
+                            p.name,
+                            p.college,
+                            p.course || 'Not specified',
+                            p.year || 'N/A',
+                            p.email,
+                            p.id
+                        ]);
+                        
+                        doc.autoTable({
+                            startY: yPos,
+                            head: [['Name', 'College', 'Course', 'Year', 'Email', 'ID']],
+                            body: participantData,
+                            theme: 'striped',
+                            headStyles: { 
+                                fillColor: [30, 64, 175],
+                                textColor: [255, 255, 255]
+                            },
+                            styles: { fontSize: 8 },
+                            margin: { left: 20, right: 20 },
+                            pageBreak: 'auto'
+                        });
+                    }
+                });
+                
+                // ========== COMPLETE PARTICIPANT LIST ==========
+                doc.addPage();
+                doc.setFillColor(30, 41, 59);
+                doc.rect(0, 0, 210, 20, 'F');
+                doc.setTextColor(255, 255, 255);
+                doc.setFontSize(16);
+                doc.text('COMPLETE PARTICIPANT DIRECTORY', 105, 13, { align: 'center' });
+                
+                const allParticipantsData = participants.map(p => [
+                    p.id,
+                    p.name,
+                    p.college,
+                    p.course || 'N/A',
+                    p.year || 'N/A',
+                    p.email,
+                    p.mobile,
+                    p.events.map(eid => events.find(e => e.id === eid)?.title || eid).join(', '),
+                    p.isWinner ? 'Yes' : 'No',
+                    p.registeredAt
+                ]);
+                
+                doc.autoTable({
+                    startY: 30,
+                    head: [['ID', 'Name', 'College', 'Course', 'Year', 'Email', 'Mobile', 'Events', 'Winner', 'Reg Date']],
+                    body: allParticipantsData,
+                    theme: 'grid',
+                    headStyles: { 
+                        fillColor: [30, 41, 59],
+                        textColor: [255, 255, 255],
+                        fontSize: 8
+                    },
+                    styles: { fontSize: 7 },
+                    margin: { left: 10, right: 10 },
+                    pageBreak: 'auto',
+                    didDrawPage: function(data) {
+                        doc.setFontSize(8);
+                        doc.setTextColor(128, 128, 128);
+                        doc.text(`Page ${doc.internal.getNumberOfPages()}`, data.settings.margin.left, doc.internal.pageSize.height - 10);
+                        doc.text('TAARUNYAM 2025 - Confidential Report', doc.internal.pageSize.width - 20, doc.internal.pageSize.height - 10, { align: 'right' });
+                    }
+                });
+                
+                // ========== FINAL PAGE - REPORT META ==========
+                doc.addPage();
+                doc.setFillColor(30, 41, 59);
+                doc.rect(0, 0, 210, 297, 'F');
+                
+                doc.setTextColor(255, 255, 255);
+                doc.setFontSize(24);
+                doc.text('REPORT COMPLETE', 105, 120, { align: 'center' });
+                
+                doc.setFontSize(12);
+                doc.text(`Generated by: Admin Panel`, 105, 140, { align: 'center' });
+                doc.text(`Total Pages: ${doc.internal.getNumberOfPages()}`, 105, 150, { align: 'center' });
+                doc.text(`Data as of: ${new Date().toLocaleString()}`, 105, 160, { align: 'center' });
+                
+                doc.setFontSize(10);
+                doc.text('© 2025 TAARUNYAM Tech Event. This report is confidential.', 105, 200, { align: 'center' });
+                doc.text('For official use only.', 105, 210, { align: 'center' });
+                
+                const filename = `Taarunyam_2025_Participants_Report_${new Date().toISOString().split('T')[0]}.pdf`;
+                doc.save(filename);
+                
+                showToast('Success', 'Professional PDF report generated successfully!');
+                
+            } catch (err) {
+                console.error('PDF Generation Error:', err);
+                showToast('Error', 'Failed to generate PDF report. Please try again.');
+            }
+        }
+        
+        // ========== ADMIN PANEL FUNCTIONS ==========
+        function toggleAdminModal() {
+            // Show login view, hide dashboard view
+            document.getElementById('admin-login-view').classList.remove('hidden');
+            document.getElementById('admin-dashboard-view').classList.add('hidden');
+            document.getElementById('admin-password').value = '';
+            openModal('admin-modal');
+        }
+        
+        function handleAdminLogin() {
+            const password = document.getElementById('admin-password').value;
+            
+            if (password === 'admin123') {
+                // Hide login view, show dashboard view
+                document.getElementById('admin-login-view').classList.add('hidden');
+                document.getElementById('admin-dashboard-view').classList.remove('hidden');
+                
+                // Initialize dashboard
+                showAdminTab(currentAdminTab);
+                renderAdminDashboard();
+                showToast('Admin Access', 'Welcome to Admin Dashboard');
+            } else {
+                showToast('Access Denied', 'Incorrect password');
+                document.getElementById('admin-password').classList.add('animate-shake');
+                setTimeout(() => {
+                    document.getElementById('admin-password').classList.remove('animate-shake');
+                }, 500);
+            }
+        }
+        
+        function adminLogout() {
+            // Hide dashboard view, show login view
+            document.getElementById('admin-login-view').classList.remove('hidden');
+            document.getElementById('admin-dashboard-view').classList.add('hidden');
+            document.getElementById('admin-password').value = '';
+            showToast('Logged Out', 'Admin session ended');
+        }
+        
+        function showAdminTab(tabName) {
+            currentAdminTab = tabName;
+            
+            document.querySelectorAll('.admin-tab').forEach(tab => {
+                if (tab.dataset.tab === tabName) {
+                    tab.classList.add('active');
+                } else {
+                    tab.classList.remove('active');
+                }
+            });
+            
+            document.querySelectorAll('.admin-tab-content').forEach(content => {
+                if (content.id === `tab-${tabName}`) {
+                    content.classList.add('active');
+                    content.classList.remove('hidden');
+                } else {
+                    content.classList.remove('active');
+                    content.classList.add('hidden');
+                }
+            });
+            
+            switch(tabName) {
+                case 'participants':
+                    renderAdminParticipants();
+                    break;
+                case 'events':
+                    renderEventsManagement();
+                    break;
+                case 'certificates':
+                    loadCertificateForms();
+                    break;
+                case 'dashboard':
+                    loadDashboardForm();
+                    break;
+                case 'footer':
+                    loadFooterForm();
+                    break;
+                case 'contact':
+                    loadContactForm();
+                    break;
+            }
+        }
+        
+        function renderAdminDashboard() {
+            renderAdminStats();
+            renderAdminParticipants();
+        }
+        
+        function renderAdminStats() {
+            document.getElementById('stat-total').innerText = participants.length;
+            document.getElementById('stat-winners').innerText = participants.filter(p => p.isWinner).length;
+            document.getElementById('stat-events').innerText = events.length;
+        }
+        
+        function renderAdminParticipants(filter = '') {
+            const list = document.getElementById('admin-participants-list');
+            const filtered = participants.filter(p => 
+                p.name.toLowerCase().includes(filter) || 
+                p.email.toLowerCase().includes(filter) ||
+                p.id.toLowerCase().includes(filter)
+            );
+            
+            if (filtered.length === 0) {
+                list.innerHTML = '<div class="text-center text-muted-foreground">No participants found.</div>';
+                return;
+            }
+            
+            list.innerHTML = filtered.map(p => `
+                <div class="glass-card p-4 rounded-lg flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
+                    <div class="flex-1">
+                        <div class="flex items-center gap-2">
+                            <h4 class="font-semibold text-white">${p.name}</h4>
+                            ${p.isWinner ? `<span class="bg-yellow-500/20 text-yellow-400 text-xs px-2 py-0.5 rounded border border-yellow-500/30">🏆 Winner (${p.winnerEvent})</span>` : ''}
+                        </div>
+                        <p class="text-xs text-muted-foreground">${p.email} | ${p.mobile || 'N/A'} | ${p.college}</p>
+                        ${p.course || p.year ? `<p class="text-xs text-muted-foreground">${p.course || ''} ${p.year ? `• ${p.year}` : ''}</p>` : ''}
+                        <div class="flex gap-1 mt-1 flex-wrap">
+                            ${p.events.map(eid => `<span class="text-[10px] px-1.5 py-0.5 bg-white/10 rounded text-gray-300">${events.find(e=>e.id===eid)?.title || eid}</span>`).join('')}
+                        </div>
+                    </div>
+                    
+                    <div class="flex gap-2">
+                        ${p.events.map(eid => {
+                            const evtName = events.find(e=>e.id===eid)?.title || eid;
+                            const isWin = p.isWinner && p.winnerEvent === eid;
+                            return `
+                                <button onclick="toggleWinner('${p.id}', '${eid}')" class="px-2 py-1 text-xs rounded border ${isWin ? 'border-yellow-500 text-yellow-400 bg-yellow-500/10' : 'border-glass-border text-gray-300 hover:bg-white/5'}">
+                                    ${isWin ? 'Revoke' : 'Win: ' + evtName.split(' ')[0]}
+                                </button>
+                                <button onclick="openCertificatePreview('${p.id}', '${eid}', '${isWin ? 'winner' : 'participation'}')" class="px-2 py-1 text-xs rounded border border-glass-border text-blue-400 hover:bg-blue-500/10">Preview</button>
+                            `;
+                        }).join('')}
+                        <button onclick="deleteParticipant('${p.id}')" class="p-1.5 text-red-400 hover:bg-red-500/10 rounded"><i data-lucide="trash-2" class="w-4 h-4"></i></button>
+                    </div>
+                </div>
+            `).join('');
+            lucide.createIcons();
+        }
+        
+        function toggleWinner(id, eid) {
+            const p = participants.find(x => x.id === id);
+            if (p) {
+                if (p.isWinner && p.winnerEvent === eid) {
+                    p.isWinner = false;
+                    p.winnerEvent = null;
+                } else {
+                    p.isWinner = true;
+                    p.winnerEvent = eid;
+                }
+                localStorage.setItem(STORAGE_KEYS.PARTICIPANTS, JSON.stringify(participants));
+                renderAdminStats();
+                renderAdminParticipants();
+            }
+        }
+        
+        function deleteParticipant(id) {
+            if(confirm('Are you sure you want to delete this participant?')) {
+                participants = participants.filter(p => p.id !== id);
+                localStorage.setItem(STORAGE_KEYS.PARTICIPANTS, JSON.stringify(participants));
+                renderAdminStats();
+                renderAdminParticipants();
+            }
+        }
+        
+        // ========== EVENT MANAGEMENT ==========
+        function renderEventsManagement() {
+            const container = document.getElementById('events-management-list');
+            
+            if (events.length === 0) {
+                container.innerHTML = '<div class="text-center text-muted-foreground py-8">No events created yet.</div>';
+                return;
+            }
+            
+            container.innerHTML = events.map((ev, index) => {
+                const icon = ev.icon || ev.title.charAt(0).toLowerCase();
+                return `
+                <div class="glass-card p-4 rounded-lg flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
+                    <div class="flex-1">
+                        <div class="flex items-center gap-3">
+                            <div class="p-2 bg-primary/20 rounded">
+                                <i data-lucide="${icon}" class="w-5 h-5 text-primary"></i>
+                            </div>
+                            <div>
+                                <h4 class="font-semibold text-white">${ev.title}</h4>
+                                <p class="text-xs text-muted-foreground">${ev.category} • ${new Date(ev.eventDate).toLocaleDateString()}</p>
+                            </div>
+                        </div>
+                        <p class="text-sm text-gray-400 mt-2 line-clamp-2">${ev.description}</p>
+                    </div>
+                    
+                    <div class="flex gap-2">
+                        <button onclick="openEventEditor('${ev.id}')" class="px-3 py-1.5 bg-blue-600 hover:bg-blue-700 text-white text-sm rounded flex items-center gap-1">
+                            <i data-lucide="edit" class="w-3 h-3"></i> Edit
+                        </button>
+                        <button onclick="deleteEvent('${ev.id}')" class="px-3 py-1.5 bg-red-600 hover:bg-red-700 text-white text-sm rounded flex items-center gap-1">
+                            <i data-lucide="trash" class="w-3 h-3"></i> Delete
+                        </button>
+                        <button onclick="moveEvent('${ev.id}', 'up')" ${index === 0 ? 'disabled' : ''} class="px-2 py-1.5 bg-gray-600 hover:bg-gray-700 text-white text-sm rounded ${index === 0 ? 'opacity-50 cursor-not-allowed' : ''}">
+                            <i data-lucide="arrow-up" class="w-3 h-3"></i>
+                        </button>
+                        <button onclick="moveEvent('${ev.id}', 'down')" ${index === events.length - 1 ? 'disabled' : ''} class="px-2 py-1.5 bg-gray-600 hover:bg-gray-700 text-white text-sm rounded ${index === events.length - 1 ? 'opacity-50 cursor-not-allowed' : ''}">
+                            <i data-lucide="arrow-down" class="w-3 h-3"></i>
+                        </button>
+                    </div>
+                </div>
+            `;
+            }).join('');
+            lucide.createIcons();
+        }
+        
+        function openEventEditor(eventId) {
+            const form = document.getElementById('event-editor-form');
+            const title = document.getElementById('event-editor-title');
+            
+            if (eventId) {
+                const ev = events.find(e => e.id === eventId);
+                if (!ev) return;
+                
+                title.textContent = 'Edit Event';
+                document.getElementById('event-edit-id').value = ev.id;
+                document.getElementById('event-edit-title').value = ev.title;
+                document.getElementById('event-edit-category').value = ev.category;
+                document.getElementById('event-edit-description').value = ev.description;
+                document.getElementById('event-edit-icon').value = ev.icon || '';
+                document.getElementById('event-edit-max').value = ev.maxParticipants;
+                document.getElementById('event-edit-date').value = ev.eventDate.substring(0, 16);
+                document.getElementById('event-edit-prizes').value = Array.isArray(ev.prizes) ? ev.prizes.join(', ') : ev.prizes;
+            } else {
+                title.textContent = 'Add New Event';
+                form.reset();
+                document.getElementById('event-edit-id').value = '';
+                document.getElementById('event-edit-date').value = new Date().toISOString().substring(0, 16);
+            }
+            
+            openModal('event-editor-modal');
+        }
+        
+        document.getElementById('event-editor-form').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const id = document.getElementById('event-edit-id').value;
+            const title = document.getElementById('event-edit-title').value;
+            const category = document.getElementById('event-edit-category').value;
+            const description = document.getElementById('event-edit-description').value;
+            let icon = document.getElementById('event-edit-icon').value.trim();
+            const maxParticipants = parseInt(document.getElementById('event-edit-max').value) || 50;
+            const eventDate = document.getElementById('event-edit-date').value;
+            const prizes = document.getElementById('event-edit-prizes').value.split(',').map(p => p.trim()).filter(p => p);
+            
+            if (!icon) {
+                icon = title.charAt(0).toLowerCase();
+            }
+            
+            const eventData = {
+                id: id || generateEventId(title),
+                title,
+                category,
+                description,
+                icon,
+                maxParticipants,
+                eventDate,
+                prizes
+            };
+            
+            if (id) {
+                const index = events.findIndex(e => e.id === id);
+                if (index !== -1) {
+                    events[index] = eventData;
+                }
+            } else {
+                events.push(eventData);
+            }
+            
+            localStorage.setItem(STORAGE_KEYS.EVENTS, JSON.stringify(events));
+            closeModal('event-editor-modal');
+            
+            renderEvents();
+            renderEventFilters();
+            renderRegistrationFormEvents();
+            renderEventsManagement();
+            
+            showToast('Success', `Event "${title}" ${id ? 'updated' : 'added'} successfully`);
+        });
+        
+        function deleteEvent(eventId) {
+            if (confirm('Are you sure you want to delete this event? This cannot be undone.')) {
+                events = events.filter(e => e.id !== eventId);
+                localStorage.setItem(STORAGE_KEYS.EVENTS, JSON.stringify(events));
+                
+                renderEvents();
+                renderEventFilters();
+                renderRegistrationFormEvents();
+                renderEventsManagement();
+                
+                showToast('Success', 'Event deleted successfully');
+            }
+        }
+        
+        function moveEvent(eventId, direction) {
+            const index = events.findIndex(e => e.id === eventId);
+            if (index === -1) return;
+            
+            if (direction === 'up' && index > 0) {
+                [events[index], events[index - 1]] = [events[index - 1], events[index]];
+            } else if (direction === 'down' && index < events.length - 1) {
+                [events[index], events[index + 1]] = [events[index + 1], events[index]];
+            }
+            
+            localStorage.setItem(STORAGE_KEYS.EVENTS, JSON.stringify(events));
+            renderEventsManagement();
+            renderEvents();
+        }
+        
+        function generateEventId(title) {
+            return title.toLowerCase().replace(/\s+/g, '-') + '-' + Date.now();
+        }
+        
+        // ========== ADMIN FORMS SETUP ==========
+        function loadCertificateForms() {
+            const partForm = document.getElementById('participation-cert-form');
+            const winForm = document.getElementById('winner-cert-form');
+            
+            if (partForm && certificates.participation) {
+                partForm.querySelector('[name="title"]').value = certificates.participation.title;
+                partForm.querySelector('[name="mainText"]').value = certificates.participation.mainText
+                    .replace(/<strong>/g, '')
+                    .replace(/<\/strong>/g, '');
+                partForm.querySelector('[name="coordinator"]').value = certificates.participation.coordinator;
+                partForm.querySelector('[name="director"]').value = certificates.participation.director;
+            }
+            
+            if (winForm && certificates.winner) {
+                winForm.querySelector('[name="title"]').value = certificates.winner.title;
+                winForm.querySelector('[name="mainText"]').value = certificates.winner.mainText
+                    .replace(/<strong>/g, '')
+                    .replace(/<\/strong>/g, '');
+                winForm.querySelector('[name="executive"]').value = certificates.winner.executive;
+                winForm.querySelector('[name="headTech"]').value = certificates.winner.headTech;
+            }
+        }
+        
+        function setupAdminForms() {
+            if (formListenersAttached) return;
+            
+            document.getElementById('participation-cert-form').addEventListener('submit', function(e) {
+                e.preventDefault();
+                const formData = new FormData(this);
+                
+                certificates.participation = {
+                    ...certificates.participation,
+                    title: formData.get('title'),
+                    mainText: formData.get('mainText'),
+                    coordinator: formData.get('coordinator'),
+                    director: formData.get('director')
+                };
+                
+                localStorage.setItem(STORAGE_KEYS.CERTIFICATES, JSON.stringify(certificates));
+                showToast('Success', 'Participation certificate settings saved');
+            });
+            
+            document.getElementById('winner-cert-form').addEventListener('submit', function(e) {
+                e.preventDefault();
+                const formData = new FormData(this);
+                
+                certificates.winner = {
+                    ...certificates.winner,
+                    title: formData.get('title'),
+                    mainText: formData.get('mainText'),
+                    executive: formData.get('executive'),
+                    headTech: formData.get('headTech')
+                };
+                
+                localStorage.setItem(STORAGE_KEYS.CERTIFICATES, JSON.stringify(certificates));
+                showToast('Success', 'Winner certificate settings saved');
+            });
+            
+            document.getElementById('dashboard-form').addEventListener('submit', function(e) {
+                e.preventDefault();
+                const formData = new FormData(this);
+                
+                dashboard = {
+                    mainTitle: formData.get('mainTitle'),
+                    subtitle: formData.get('subtitle'),
+                    description: formData.get('description'),
+                    eventDate: formData.get('eventDate'),
+                    eventVenue: formData.get('eventVenue'),
+                    categoriesText: formData.get('categoriesText'),
+                    countdownDate: formData.get('countdownDate')
+                };
+                
+                localStorage.setItem(STORAGE_KEYS.DASHBOARD, JSON.stringify(dashboard));
+                loadWebsiteContent();
+                initCountdown();
+                showToast('Success', 'Dashboard content updated');
+            });
+            
+            document.getElementById('footer-form').addEventListener('submit', function(e) {
+                e.preventDefault();
+                const formData = new FormData(this);
+                
+                footer = {
+                    description: formData.get('description'),
+                    extraInfo: formData.get('extraInfo'),
+                    copyright: formData.get('copyright')
+                };
+                
+                localStorage.setItem(STORAGE_KEYS.FOOTER, JSON.stringify(footer));
+                loadWebsiteContent();
+                showToast('Success', 'Footer content updated');
+            });
+            
+            document.getElementById('contact-form').addEventListener('submit', function(e) {
+                e.preventDefault();
+                const formData = new FormData(this);
+                
+                contact = {
+                    email: formData.get('email'),
+                    phone: formData.get('phone'),
+                    location: formData.get('location')
+                };
+                
+                localStorage.setItem(STORAGE_KEYS.CONTACT, JSON.stringify(contact));
+                loadWebsiteContent();
+                showToast('Success', 'Contact information updated');
+            });
+            
+            formListenersAttached = true;
+        }
+        
+        function loadDashboardForm() {
+            const form = document.getElementById('dashboard-form');
+            if (form) {
+                form.querySelector('[name="mainTitle"]').value = dashboard.mainTitle;
+                form.querySelector('[name="subtitle"]').value = dashboard.subtitle;
+                form.querySelector('[name="description"]').value = dashboard.description;
+                form.querySelector('[name="eventDate"]').value = dashboard.eventDate;
+                form.querySelector('[name="eventVenue"]').value = dashboard.eventVenue;
+                form.querySelector('[name="categoriesText"]').value = dashboard.categoriesText;
+                form.querySelector('[name="countdownDate"]').value = dashboard.countdownDate;
+            }
+        }
+        
+        function loadFooterForm() {
+            const form = document.getElementById('footer-form');
+            if (form) {
+                form.querySelector('[name="description"]').value = footer.description;
+                form.querySelector('[name="extraInfo"]').value = footer.extraInfo;
+                form.querySelector('[name="copyright"]').value = footer.copyright;
+            }
+        }
+        
+        function loadContactForm() {
+            const form = document.getElementById('contact-form');
+            if (form) {
+                form.querySelector('[name="email"]').value = contact.email;
+                form.querySelector('[name="phone"]').value = contact.phone;
+                form.querySelector('[name="location"]').value = contact.location;
+            }
+        }
+        
+        // ========== UTILITY FUNCTIONS ==========
+        function showToast(title, message) {
+            const container = document.getElementById('toast-container');
+            const toast = document.createElement('div');
+            toast.className = "glass-card bg-background/90 text-foreground border border-glass-border p-4 rounded-lg shadow-lg min-w-[300px] animate-in slide-in-from-right fade-in duration-300";
+            toast.innerHTML = `
+                <div class="font-semibold text-sm">${title}</div>
+                <div class="text-sm text-muted-foreground">${message}</div>
+            `;
+            
+            container.appendChild(toast);
+            
+            setTimeout(() => {
+                toast.classList.add('opacity-0', 'translate-x-full');
+                setTimeout(() => toast.remove(), 300);
+            }, 3000);
+        }
+    </script>
+</body>
+</html>
