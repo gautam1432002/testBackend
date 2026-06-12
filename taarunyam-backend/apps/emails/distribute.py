@@ -84,6 +84,7 @@ def _build_html_email(
     event_title: str,
     is_winner: bool,
     template: dict,
+    qr_token: str,
 ) -> str:
     """Build an HTML email body from a template dict."""
     greeting = template.get('greeting', 'Dear Participant,')
@@ -129,8 +130,17 @@ def _build_html_email(
       </div>
 
       <p style="font-size: 14px; color: #6b7280; margin: 0 0 8px;">
-        Your certificate PDF is attached to this email. Please download and save it for your records.
+        View and download your official certificate using the secure link below:
       </p>
+      
+      <div style="text-align: center; margin: 32px 0;">
+        <a href="{getattr(settings, 'FRONTEND_URL', 'http://localhost:5173')}/verify/{qr_token}" 
+           style="background-color: #2563eb; color: #ffffff; padding: 14px 28px; 
+                  text-decoration: none; border-radius: 8px; font-weight: bold; 
+                  display: inline-block; box-shadow: 0 4px 6px -1px rgba(37, 99, 235, 0.2);">
+          View & Download Certificate
+        </a>
+      </div>
     </div>
 
     <!-- Footer -->
@@ -152,68 +162,34 @@ def _build_html_email(
 
 def _ensure_certificate_pdf(registration, cert_type: str = None) -> tuple:
     """
-    Ensure a Certificate row exists and has a PDF generated with the CORRECT type.
-    If no PDF exists, auto-generates it.
-    If the cert type does not match the participant's current winner status, regenerates.
-
+    Ensure a Certificate row exists.
     Returns (certificate, error_string_or_None).
-    If generation fails, returns (None, error_string).
     """
     from apps.certificates.models import Certificate
     from apps.certificates.services import CertificateService
 
-    # Determine the correct cert type from is_winner flag (authoritative)
     correct_type = cert_type if cert_type is not None else (
         'winner' if registration.is_winner else 'participation'
     )
 
-    cert = None
-    needs_regeneration = False
-
     try:
         cert = Certificate.objects.get(registration=registration)
-
-        # Issue 4 fix: if cert type doesn't match the correct type, force regenerate
         if cert.type != correct_type:
-            logger.info(
-                f"[Distribute] Cert type mismatch for {registration.registration_id}: "
-                f"existing={cert.type!r}, required={correct_type!r}. Regenerating."
-            )
             cert.type = correct_type
-            needs_regeneration = True
-        elif cert.pdf_path:
-            try:
-                # Verify the file physically exists on disk
-                Path(cert.pdf_path.path).stat()
-                return cert, None  # All good — correct type + file exists
-            except (FileNotFoundError, ValueError):
-                needs_regeneration = True  # File missing — regenerate
-                logger.info(f"[Distribute] PDF file missing for {registration.registration_id} — regenerating.")
-        else:
-            needs_regeneration = True
-            logger.info(f"[Distribute] No PDF path for {registration.registration_id} — generating.")
-
+            cert.save()
+        return cert, None
     except Certificate.DoesNotExist:
-        cert = None
-        needs_regeneration = True
-
-    if not needs_regeneration:
-        return cert, None
-
-    # Generate (or regenerate) the PDF
-    try:
-        svc = CertificateService()
-        prize_pos = getattr(cert, 'prize_position', '') if cert else ''
-        cert = svc.generate(
-            registration=registration,
-            cert_type=correct_type,
-            prize_position=prize_pos,
-            issued_by=None,  # Auto-generated — no specific admin
-        )
-        return cert, None
-    except Exception as e:
-        logger.error(f"[Distribute] PDF generation failed for {registration.registration_id}: {e}")
-        return None, str(e)
+        try:
+            svc = CertificateService()
+            cert = svc.generate(
+                registration=registration,
+                cert_type=correct_type,
+                prize_position='',
+                issued_by=None,
+            )
+            return cert, None
+        except Exception as e:
+            return None, str(e)
 
 
 # ─── Core Send Function (used by the view) ────────────────────────────────────
@@ -310,6 +286,7 @@ def distribute_emails(registration_ids: list[str], template: dict) -> list[dict]
                 event_title=reg.event.title,
                 is_winner=is_winner,
                 template=template,
+                qr_token=str(cert.qr_token),
             )
 
             msg = MIMEMultipart('mixed')
@@ -321,18 +298,6 @@ def distribute_emails(registration_ids: list[str], template: dict) -> list[dict]
             alt_part = MIMEMultipart('alternative')
             alt_part.attach(MIMEText(html_body, 'html', 'utf-8'))
             msg.attach(alt_part)
-
-            # PDF attachment
-            pdf_path = cert.pdf_path.path
-            with open(pdf_path, 'rb') as f:
-                pdf_data = f.read()
-
-            part = MIMEBase('application', 'pdf')
-            part.set_payload(pdf_data)
-            encoders.encode_base64(part)
-            safe_name = f"TAARUNYAM_2026_{reg.participant.full_name.replace(' ', '_')}_Certificate.pdf"
-            part.add_header('Content-Disposition', 'attachment', filename=safe_name)
-            msg.attach(part)
 
         except Exception as e:
             result['error'] = f'Failed to build email: {e}'

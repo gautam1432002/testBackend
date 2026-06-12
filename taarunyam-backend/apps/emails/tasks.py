@@ -49,11 +49,6 @@ def send_certificate_email(self, log_id):
         return {'success': True, 'log_id': log_id, 'message': 'Already sent'}
 
     cert = log.certificate
-    if not cert.pdf_path:
-        log.status = 'failed'
-        log.error_message = 'PDF not generated yet'
-        log.save()
-        return {'success': False, 'log_id': log_id, 'error': 'PDF not generated yet'}
 
     smtp_creds = get_smtp_credentials()
     if not smtp_creds:
@@ -69,9 +64,9 @@ def send_certificate_email(self, log_id):
     subject = f"Your Certificate for {event_title}"
     body = (
         f"Dear {participant_name},\n\n"
-        f"Thank you for participating in {event_title}. "
-        f"Please find your certificate attached to this email.\n\n"
-        f"You can verify your certificate anytime using the QR code on the certificate.\n\n"
+        f"Thank you for participating in {event_title}.\n\n"
+        f"View and download your official certificate using the secure link below:\n"
+        f"{getattr(settings, 'FRONTEND_URL', 'http://localhost:5173')}/verify/{cert.qr_token}\n\n"
         f"Best regards,\n"
         f"The TAARUNYAM Team"
     )
@@ -95,7 +90,6 @@ def send_certificate_email(self, log_id):
             to=[log.recipient_email],
             connection=backend
         )
-        email.attach_file(cert.pdf_path.path)
         email.send()
 
         log.status = 'sent'
@@ -140,8 +134,7 @@ def start_bulk_email(event_id):
     # Find valid certificates for this event that haven't been successfully sent
     certs = Certificate.objects.filter(
         registration__event_id=event_id,
-        is_valid=True,
-        pdf_path__isnull=False
+        is_valid=True
     ).exclude(
         email_logs__status='sent'
     ).select_related('registration__participant')

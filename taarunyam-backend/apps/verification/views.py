@@ -68,6 +68,14 @@ class PublicVerifyView(APIView):
             except Exception:
                 pass # Don't let logging failure break the response
 
+        from apps.settings_app.models import SiteSettings
+        cert_settings = {}
+        try:
+            settings_obj = SiteSettings.objects.get(pk=1)
+            cert_settings = settings_obj.cert_settings
+        except:
+            pass
+
         # Construct payload
         if is_registration:
             participant = reg.participant
@@ -85,6 +93,7 @@ class PublicVerifyView(APIView):
                 },
                 'type': 'entry-pass',
                 'issuedAt': reg.registration_date.isoformat(),
+                'certSettings': cert_settings,
             }
             message = 'Valid Registration Pass.'
         else:
@@ -104,6 +113,7 @@ class PublicVerifyView(APIView):
                 },
                 'type': cert.type,
                 'issuedAt': cert.issued_at.isoformat(),
+                'certSettings': cert_settings,
             }
             message = 'Certificate is valid.'
 

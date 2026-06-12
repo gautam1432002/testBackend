@@ -23,7 +23,4 @@ urlpatterns = [
 
     # Issue 3: generate+download the same PDF the email attaches
     path('certificates/preview-download/', views.AdminCertificatePreviewDownloadView.as_view(), name='admin-cert-preview-download'),
-
-    # Sync: Upload frontend-generated PDF
-    path('certificates/upload/', views.AdminCertificateUploadView.as_view(), name='admin-cert-upload'),
 ]

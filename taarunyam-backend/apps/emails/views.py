@@ -74,60 +74,88 @@ class AdminSendEmailView(APIView):
 
 # ─── NEW: Bulk Send with participant_ids + template ───────────────────────────
 
-class AdminBulkSendEmailView(APIView):
+class AdminUploadSendEmailView(APIView):
     """
-    Accepts a list of registration IDs and an optional email template.
-    Auto-generates PDFs if needed, then sends emails synchronously.
-    Returns per-participant delivery results immediately.
-
-    NOTE: This view is COMPLETELY SEPARATE from auth password reset.
-    It uses distribute.py — no shared code with authentication.
+    Accepts multipart/form-data from the frontend containing a fully generated PDF Blob,
+    then constructs an EmailMessage and sends it immediately.
     """
     permission_classes = [IsAdmin]
 
     def post(self, request):
-        participant_ids = request.data.get('participant_ids', [])
-        template = request.data.get('template', {})
+        participant_id = request.data.get('participant_id')
+        participant_name = request.data.get('participant_name', '')
+        participant_email = request.data.get('participant_email')
+        subject = request.data.get('subject', 'Your TAARUNYAM 2026 Certificate')
+        greeting = request.data.get('greeting', 'Dear Participant,')
+        body_text = request.data.get('body', '')
+        closing = request.data.get('closing', '')
+        signature = request.data.get('signature', '')
+        is_winner = request.data.get('is_winner') == 'true'
+        pdf_file = request.FILES.get('certificate_pdf')
 
-        if not participant_ids:
-            return Response({
-                'success': False,
-                'data': {},
-                'message': 'No participant IDs provided.'
-            }, status=400)
+        if not participant_id or not participant_email or not pdf_file:
+            return Response({'success': False, 'data': {}, 'message': 'Missing required fields or PDF file.'}, status=400)
 
-        if not isinstance(participant_ids, list):
-            return Response({
-                'success': False,
-                'data': {},
-                'message': '`participant_ids` must be a list of registration ID strings.'
-            }, status=400)
+        # Build HTML Email Body (simulating the previous template rendering)
+        cert_type = 'Winner Certificate' if is_winner else 'Certificate of Participation'
+        html_body = f"""
+        <html>
+        <body style="font-family: Arial, sans-serif; color: #1e1e2e; background: #f9f9f9; padding: 0; margin: 0;">
+          <div style="max-width: 600px; margin: 40px auto; background: #ffffff; border-radius: 12px; box-shadow: 0 4px 24px rgba(0,0,0,0.08); overflow: hidden;">
+            <div style="background: linear-gradient(135deg, #1e3a5f 0%, #2563eb 100%); padding: 40px 32px; text-align: center;">
+              <h1 style="color: #ffffff; font-size: 28px; margin: 0; letter-spacing: 3px; font-weight: 900;">TAARUNYAM 2026</h1>
+            </div>
+            <div style="padding: 40px 32px;">
+              <p style="font-size: 16px; color: #374151; margin: 0 0 16px;">{greeting}</p>
+              <p style="font-size: 16px; color: #374151; line-height: 1.7; margin: 0 0 20px;">{body_text}</p>
+              <div style="background: {'linear-gradient(135deg, #fef9c3, #fde68a)' if is_winner else 'linear-gradient(135deg, #eff6ff, #dbeafe)'}; border-radius: 8px; padding: 20px 24px; margin: 24px 0;">
+                <p style="margin: 0; font-size: 15px; font-weight: bold;">{cert_type}</p>
+                <p style="margin: 8px 0 0; font-size: 14px;">Awarded to: <strong>{participant_name}</strong></p>
+              </div>
+              <p style="font-size: 14px; color: #6b7280; margin: 0 0 8px;">Your official certificate PDF is attached to this email.</p>
+            </div>
+            <div style="padding: 24px 32px; background: #f3f4f6; text-align: center;">
+              <p style="color: #374151; font-size: 14px; margin: 0;">{closing}</p>
+              <p style="color: #1d4ed8; font-size: 15px; font-weight: bold; margin: 6px 0 0;">{signature}</p>
+            </div>
+          </div>
+        </body>
+        </html>
+        """
 
-        # Default template values
-        template.setdefault('subject', 'Your TAARUNYAM 2026 Certificate')
-        template.setdefault('greeting', 'Dear Participant,')
-        template.setdefault('body', 'Please find your official TAARUNYAM 2026 certificate attached to this email. Thank you for your participation.')
-        template.setdefault('closing', 'Best Regards,')
-        template.setdefault('signature', 'The TAARUNYAM Organizing Team')
+        try:
+            from django.core.mail import EmailMultiAlternatives
+            from django.conf import settings
+            
+            # Use Django's default EMAIL_BACKEND (which is set up in settings)
+            msg = EmailMultiAlternatives(
+                subject=subject,
+                body=body_text, # text content fallback
+                from_email=getattr(settings, 'DEFAULT_FROM_EMAIL', 'no-reply@taarunyam.com'),
+                to=[participant_email],
+            )
+            msg.attach_alternative(html_body, "text/html")
+            
+            # Attach the exact PDF received from the frontend
+            pdf_data = pdf_file.read()
+            safe_name = f"TAARUNYAM_2026_{participant_name.replace(' ', '_')}_Certificate.pdf"
+            msg.attach(safe_name, pdf_data, 'application/pdf')
+            msg.send(fail_silently=False)
 
-        # Import the standalone distributor — zero coupling to auth
-        from .distribute import distribute_emails
+            # Log success
+            try:
+                from apps.participants.models import Registration
+                reg = Registration.objects.get(registration_id=participant_id)
+                reg.certificate_issued = True
+                reg.save(update_fields=['certificate_issued'])
+            except:
+                pass
 
-        results = distribute_emails(registration_ids=participant_ids, template=template)
+            return _success({'registration_id': participant_id}, 'Email sent successfully.')
+            
+        except Exception as e:
+            return Response({'success': False, 'data': {'registration_id': participant_id}, 'message': str(e)}, status=500)
 
-        sent_count = sum(1 for r in results if r['status'] == 'sent')
-        failed_count = sum(1 for r in results if r['status'] == 'failed')
-
-        return _success(
-            data={
-                'results': results,
-                'sent': sent_count,
-                'failed': failed_count,
-                'total': len(results),
-            },
-            message=f'Distribution complete: {sent_count} sent, {failed_count} failed.',
-            status_code=status.HTTP_200_OK,
-        )
 
 
 class AdminEmailTaskStatusView(APIView):

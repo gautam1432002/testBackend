@@ -13,13 +13,15 @@ BASE_DIR = Path(__file__).resolve().parent.parent.parent
 # ─── Load .env ───────────────────────────────────────────────────────────────
 env = environ.Env(
     DEBUG=(bool, True),
-    ALLOWED_HOSTS=(list, ['localhost', '127.0.0.1']),
+    PRODUCTION=(bool, False),
+    ALLOWED_HOSTS=(list, ['*']),
 )
 environ.Env.read_env(os.path.join(BASE_DIR, '.env'))
 
 # ─── Core ────────────────────────────────────────────────────────────────────
 SECRET_KEY = env('SECRET_KEY')
 DEBUG = env('DEBUG')
+PRODUCTION = env('PRODUCTION')
 ALLOWED_HOSTS = env('ALLOWED_HOSTS')
 SITE_URL = env('SITE_URL', default='http://localhost:8000')
 FRONTEND_URL = env('FRONTEND_URL', default='http://localhost:5173')
@@ -186,7 +188,7 @@ CELERY_TIMEZONE = TIME_ZONE
 CELERY_BEAT_SCHEDULER = 'django_celery_beat.schedulers:DatabaseScheduler'
 CELERY_TASK_TRACK_STARTED = True
 CELERY_TASK_SEND_SENT_EVENT = True
-CELERY_TASK_ALWAYS_EAGER = True  # Run tasks synchronously since Redis is down
+CELERY_TASK_ALWAYS_EAGER = env.bool('CELERY_TASK_ALWAYS_EAGER', default=False)
 
 # ─── django-axes ──────────────────────────────────────────────────────────────
 AXES_FAILURE_LIMIT = 5
@@ -225,3 +227,29 @@ EMAIL_HOST_USER = env('EMAIL_HOST_USER', default='')
 EMAIL_HOST_PASSWORD = env('EMAIL_HOST_PASSWORD', default='')
 EMAIL_USE_TLS = True
 DEFAULT_FROM_EMAIL = env('DEFAULT_FROM_EMAIL', default='noreply@taarunyam.com')
+
+# ─── Deployment Security Hardening ───────────────────────────────────────────
+# Reference: https://docs.djangoproject.com/en/stable/ref/settings/#security
+if PRODUCTION:
+    SECURE_COOKIE_SECURE = True
+    SESSION_COOKIE_SECURE = True
+    CSRF_COOKIE_SECURE = True
+    SECURE_HSTS_SECONDS = 31536000  # 1 year
+    SECURE_HSTS_INCLUDE_SUBDOMAINS = True
+    SECURE_HSTS_PRELOAD = True
+    SECURE_CONTENT_TYPE_NOSNIFF = True
+    SECURE_BROWSER_XSS_FILTER = True
+    SECURE_SSL_REDIRECT = env.bool('SECURE_SSL_REDIRECT', default=True)
+    SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
+    # Prevent the site from being embedded in frames (Clickjacking protection)
+    X_FRAME_OPTIONS = 'DENY'
+else:
+    X_FRAME_OPTIONS = 'SAMEORIGIN'
+    # Locals/dev should not redirect to SSL unless explicitly tested
+    SECURE_SSL_REDIRECT = False
+
+# Ensure CSRF trusted origins for the frontend
+CSRF_TRUSTED_ORIGINS = [FRONTEND_URL]
+if FRONTEND_URL.startswith('http://'):
+    # Add https version just in case for prod
+    CSRF_TRUSTED_ORIGINS.append(FRONTEND_URL.replace('http://', 'https://'))
